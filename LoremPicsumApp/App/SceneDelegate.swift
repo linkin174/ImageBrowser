@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import NeedleFoundation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -13,9 +14,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        registerProviderFactories()
         guard let scene = (scene as? UIWindowScene) else { return }
-        window = UIWindow(windowScene: scene)
-        window?.rootViewController = ViewController()
+        window = UIWindow(frame: scene.coordinateSpace.bounds)
+        window?.windowScene = scene
+        let rootComponent = RootComponent()
+        window?.rootViewController = rootComponent.rootViewController
         window?.makeKeyAndVisible()
     }
 
