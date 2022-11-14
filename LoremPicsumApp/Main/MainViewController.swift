@@ -10,7 +10,7 @@
 //  see http://clean-swift.com
 //
 
-import UIKit
+import SwiftUI
 import SnapKit
 
 protocol MainDisplayLogic: AnyObject {
@@ -22,7 +22,7 @@ class MainViewController: UIViewController {
     var interactor: MainBusinessLogic?
     var router: (NSObjectProtocol & MainRoutingLogic & MainDataPassing)?
     
-    //MARK: Private properties
+    //MARK: Views
     
     private var imageView: UIImageView = {
        let view = UIImageView()
@@ -35,6 +35,32 @@ class MainViewController: UIViewController {
         indicator.hidesWhenStopped = true
         indicator.startAnimating()
         return indicator
+    }()
+    
+    private var randomButton: UIButton = {
+       let button = UIButton()
+        button.layer.cornerRadius = 12
+        button.backgroundColor = .red
+        button.setTitle("Show Random Image", for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.layer.shadowColor = UIColor.red.cgColor
+        button.layer.shadowRadius = 5
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowOpacity = 0.5
+        return button
+    }()
+    
+    private var galleryButton: UIButton = {
+       let button = UIButton()
+        button.layer.cornerRadius = 12
+        button.backgroundColor = .blue
+        button.setTitle("Show Gallery", for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.layer.shadowColor = UIColor.blue.cgColor
+        button.layer.shadowRadius = 5
+        button.layer.shadowOffset = CGSize(width: 0, height: 4)
+        button.layer.shadowOpacity = 0.5
+        return button
     }()
 
     // MARK: Object lifecycle
@@ -67,22 +93,54 @@ class MainViewController: UIViewController {
     private func setupConstaints() {
         view.addSubview(imageView)
         view.addSubview(loadingIndicator)
+        view.addSubview(randomButton)
+        view.addSubview(galleryButton)
         
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
         
         loadingIndicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(UIScreen.main.bounds.maxY / 2 - 50)
         }
+        
+        randomButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-40)
+            make.width.equalToSuperview().inset(40)
+            make.height.equalTo(40)
+        }
+        
+        galleryButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(40)
+            make.width.equalToSuperview().inset(40)
+            make.height.equalTo(40)
+        }
+    }
+    
+    private func setupNavigationBar() {
+        // Make navigation bar invisible
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.view.backgroundColor = .clear
     }
 
     // MARK: - View lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         setupConstaints()
         interactor?.makeRequest(request: .loadBackgroundImage)
+    }
+}
+
+struct MainViewController_Previews: PreviewProvider {
+    static var previews: some View {
+        MainViewController().preview()
     }
 }
 

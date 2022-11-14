@@ -38,6 +38,7 @@
 		70EF67B629218BBA006696C2 /* GalleryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67B029218BBA006696C2 /* GalleryModels.swift */; };
 		70EF67B729218BBA006696C2 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67B129218BBA006696C2 /* GalleryViewController.swift */; };
 		70EF67B829218BBA006696C2 /* GalleryInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67B229218BBA006696C2 /* GalleryInteractor.swift */; };
+		70EF67BB2922B221006696C2 /* UIViewController + Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67BA2922B221006696C2 /* UIViewController + Preview.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -87,6 +88,7 @@
 		70EF67B029218BBA006696C2 /* GalleryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryModels.swift; sourceTree = "<group>"; };
 		70EF67B129218BBA006696C2 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		70EF67B229218BBA006696C2 /* GalleryInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInteractor.swift; sourceTree = "<group>"; };
+		70EF67BA2922B221006696C2 /* UIViewController + Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Preview.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,6 +130,7 @@
 				70EF679F29218B8C006696C2 /* RandomImage */,
 				70EF67AC29218BAF006696C2 /* Gallery */,
 				70EF677B29216A54006696C2 /* Services */,
+				70EF67B92922B208006696C2 /* Extensions */,
 				70EF677C29216A60006696C2 /* App */,
 				70EF677D29216AB3006696C2 /* Resources */,
 				702E48902921518F005C6C82 /* LaunchScreen.storyboard */,
@@ -209,6 +212,14 @@
 				70EF67B229218BBA006696C2 /* GalleryInteractor.swift */,
 			);
 			path = Gallery;
+			sourceTree = "<group>";
+		};
+		70EF67B92922B208006696C2 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				70EF67BA2922B221006696C2 /* UIViewController + Preview.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -320,6 +331,7 @@
 				70EF677F29216AC2006696C2 /* NetworkService.swift in Sources */,
 				70EF678829218806006696C2 /* NeedleGenerated.swift in Sources */,
 				70EF678629217883006696C2 /* API.swift in Sources */,
+				70EF67BB2922B221006696C2 /* UIViewController + Preview.swift in Sources */,
 				70EF679C29218B42006696C2 /* MainModels.swift in Sources */,
 				702E48882921518D005C6C82 /* SceneDelegate.swift in Sources */,
 				70EF67AB29218BA3006696C2 /* RandomImageInteractor.swift in Sources */,
