@@ -13,31 +13,43 @@
 import UIKit
 
 protocol RandomImageDisplayLogic: AnyObject {
-    func displaySomething(viewModel: RandomImage.Something.ViewModel)
-//    func displaySomethingElse(viewModel: RandomImage.SomethingElse.ViewModel)
+    func display(viewModel: RandomImage.ViewModel)
 }
 
 class RandomImageViewController: UIViewController, RandomImageDisplayLogic {
+
     var interactor: RandomImageBusinessLogic?
     var router: (NSObjectProtocol & RandomImageRoutingLogic & RandomImageDataPassing)?
+    
+    let fetcher: NetworkFetcher
 
     // MARK: Object lifecycle
-
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    
+    init(fetcher: NetworkFetcher) {
+        self.fetcher = fetcher
+        super.init(nibName: nil, bundle: nil)
         setup()
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
+    
+//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//        setup()
+//    }
+//
+//    required init?(coder aDecoder: NSCoder) {
+//        super.init(coder: aDecoder)
+//        setup()
+//    }
 
     // MARK: - Setup Clean Code Design Pattern 
 
     private func setup() {
         let viewController = self
-        let interactor = RandomImageInteractor()
+        let interactor = RandomImageInteractor(fetcher: fetcher)
         let presenter = RandomImagePresenter()
         let router = RandomImageRouter()
         viewController.interactor = interactor
@@ -48,53 +60,17 @@ class RandomImageViewController: UIViewController, RandomImageDisplayLogic {
         router.dataStore = interactor
     }
 
-    // MARK: - Routing
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let scene = segue.identifier {
-            let selector = NSSelectorFromString("routeTo\(scene)WithSegue:")
-            if let router = router, router.responds(to: selector) {
-                router.perform(selector, with: segue)
-            }
-        }
-    }
-
     // MARK: - View lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        doSomething()
-//        doSomethingElse()
+        view.backgroundColor = .green
     }
-    
-    //MARK: - receive events from UI
-    
-    //@IBOutlet weak var nameTextField: UITextField!
-//
-//    @IBAction func someButtonTapped(_ sender: Any) {
-//
-//    }
-//
-//    @IBAction func otherButtonTapped(_ sender: Any) {
-//
-//    }
-    
-    // MARK: - request data from RandomImageInteractor
-
-    func doSomething() {
-        let request = RandomImage.Something.Request()
-        interactor?.doSomething(request: request)
-    }
-//
-//    func doSomethingElse() {
-//        let request = RandomImage.SomethingElse.Request()
-//        interactor?.doSomethingElse(request: request)
-//    }
 
     // MARK: - display view model from RandomImagePresenter
 
-    func displaySomething(viewModel: RandomImage.Something.ViewModel) {
-        //nameTextField.text = viewModel.name
+    func display(viewModel: RandomImage.ViewModel) {
+        
     }
 //
 //    func displaySomethingElse(viewModel: RandomImage.SomethingElse.ViewModel) {

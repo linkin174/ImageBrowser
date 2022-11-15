@@ -39,6 +39,8 @@
 		70EF67B729218BBA006696C2 /* GalleryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67B129218BBA006696C2 /* GalleryViewController.swift */; };
 		70EF67B829218BBA006696C2 /* GalleryInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67B229218BBA006696C2 /* GalleryInteractor.swift */; };
 		70EF67BB2922B221006696C2 /* UIViewController + Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67BA2922B221006696C2 /* UIViewController + Preview.swift */; };
+		70EF67BD2923BB35006696C2 /* RandomImageComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67BC2923BB35006696C2 /* RandomImageComponent.swift */; };
+		70EF67BF2923C2FB006696C2 /* GalleryComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67BE2923C2FB006696C2 /* GalleryComponent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -89,6 +91,8 @@
 		70EF67B129218BBA006696C2 /* GalleryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryViewController.swift; sourceTree = "<group>"; };
 		70EF67B229218BBA006696C2 /* GalleryInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryInteractor.swift; sourceTree = "<group>"; };
 		70EF67BA2922B221006696C2 /* UIViewController + Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Preview.swift"; sourceTree = "<group>"; };
+		70EF67BC2923BB35006696C2 /* RandomImageComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageComponent.swift; sourceTree = "<group>"; };
+		70EF67BE2923C2FB006696C2 /* GalleryComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryComponent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +201,7 @@
 				70EF67A329218BA3006696C2 /* RandomImageModels.swift */,
 				70EF67A429218BA3006696C2 /* RandomImageViewController.swift */,
 				70EF67A529218BA3006696C2 /* RandomImageInteractor.swift */,
+				70EF67BC2923BB35006696C2 /* RandomImageComponent.swift */,
 			);
 			path = RandomImage;
 			sourceTree = "<group>";
@@ -210,6 +215,7 @@
 				70EF67B029218BBA006696C2 /* GalleryModels.swift */,
 				70EF67B129218BBA006696C2 /* GalleryViewController.swift */,
 				70EF67B229218BBA006696C2 /* GalleryInteractor.swift */,
+				70EF67BE2923C2FB006696C2 /* GalleryComponent.swift */,
 			);
 			path = Gallery;
 			sourceTree = "<group>";
@@ -319,6 +325,7 @@
 				70EF67B629218BBA006696C2 /* GalleryModels.swift in Sources */,
 				70EF67B329218BBA006696C2 /* GalleryPresenter.swift in Sources */,
 				70EF678129216B59006696C2 /* NetworkFetcher.swift in Sources */,
+				70EF67BF2923C2FB006696C2 /* GalleryComponent.swift in Sources */,
 				702E48862921518D005C6C82 /* AppDelegate.swift in Sources */,
 				70EF67A629218BA3006696C2 /* RandomImagePresenter.swift in Sources */,
 				70EF679D29218B42006696C2 /* MainViewController.swift in Sources */,
@@ -328,6 +335,7 @@
 				70EF67A829218BA3006696C2 /* RandomImageRouter.swift in Sources */,
 				70EF67B429218BBA006696C2 /* GalleryWorker.swift in Sources */,
 				70EF679B29218B42006696C2 /* MainRouter.swift in Sources */,
+				70EF67BD2923BB35006696C2 /* RandomImageComponent.swift in Sources */,
 				70EF677F29216AC2006696C2 /* NetworkService.swift in Sources */,
 				70EF678829218806006696C2 /* NeedleGenerated.swift in Sources */,
 				70EF678629217883006696C2 /* API.swift in Sources */,

@@ -13,7 +13,8 @@
 import UIKit
 
 @objc protocol MainRoutingLogic {
-    //func routeToSomewhere(segue: UIStoryboardSegue?)
+    func routeToRandomImageVC()
+    func routeToGalleryVC()
 }
 
 protocol MainDataPassing {
@@ -24,36 +25,23 @@ class MainRouter: NSObject, MainRoutingLogic, MainDataPassing {
     weak var viewController: MainViewController?
     var dataStore: MainDataStore?
 
-// MARK: Routing (navigating to other screens)
+    // MARK: Routing (navigating to other screens)
 
-//func routeToSomewhere(segue: UIStoryboardSegue?) {
-//    if let segue = segue {
-//        let destinationVC = segue.destination as! SomewhereViewController
-//        var destinationDS = destinationVC.router!.dataStore!
-//        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-//    } else {
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        let destinationVC = storyboard.instantiateViewController(withIdentifier: "SomewhereViewController") as! SomewhereViewController
-//        var destinationDS = destinationVC.router!.dataStore!
-//        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-//        navigateToSomewhere(source: viewController!, destination: destinationVC)
-//    }
-//}
-    
-    func routeToRandomImage() {
-        
+    func routeToRandomImageVC() {
+        guard let source = viewController else { return }
+        let destinationVC = source.randomImageBuilder.randomImageViewController
+        navigateToSomewhere(source: source, destination: destinationVC)
     }
     
+    func routeToGalleryVC() {
+        guard let source = viewController else { return }
+        let destination = source.galleryBuilder.galleryViewController
+        navigateToSomewhere(source: source, destination: destination)
+    }
 
-// MARK: Navigation to other screen
+    // MARK: Navigation to other screen
 
-//func navigateToSomewhere(source: MainViewController, destination: SomewhereViewController) {
-//    source.show(destination, sender: nil)
-//}
-
-// MARK: Passing data to other screen
-
-//    func passDataToSomewhere(source: MainDataStore, destination: inout SomewhereDataStore) {
-//        destination.name = source.name
-//    }
+    private func navigateToSomewhere(source: UIViewController, destination: UIViewController) {
+        source.show(destination, sender: nil)
+    }
 }

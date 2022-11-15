@@ -20,17 +20,19 @@ protocol GalleryDisplayLogic: AnyObject {
 class GalleryViewController: UIViewController, GalleryDisplayLogic {
     var interactor: GalleryBusinessLogic?
     var router: (NSObjectProtocol & GalleryRoutingLogic & GalleryDataPassing)?
+    
+    let fetcher: NetworkFetcher
 
     // MARK: Object lifecycle
-
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    
+    init(fetcher: NetworkFetcher) {
+        self.fetcher = fetcher
+        super.init(nibName: nil, bundle: nil)
         setup()
     }
 
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
+        fatalError("init(coder:) has not been implemented")
     }
 
     // MARK: - Setup Clean Code Design Pattern 
@@ -64,6 +66,7 @@ class GalleryViewController: UIViewController, GalleryDisplayLogic {
     override func viewDidLoad() {
         super.viewDidLoad()
         doSomething()
+        view.backgroundColor = .blue
 //        doSomethingElse()
     }
     

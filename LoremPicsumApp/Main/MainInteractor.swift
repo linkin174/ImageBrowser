@@ -21,12 +21,13 @@ protocol MainDataStore {
 }
 
 class MainInteractor: MainBusinessLogic, MainDataStore {
+    
     func makeRequest(request: Main.Request) {
         switch request {
         case .loadBackgroundImage:
             Task {
                 do {
-                    let data = try await fetcher.fetchRandomImage(of: 1)
+                    let data = try await fetcher.fetchRandomImage(of: 2)
                     presenter?.present(response: .presentBackgroundImage(data: data, error: nil))
                 } catch let error {
                     presenter?.present(response: .presentBackgroundImage(data: nil, error: error))
@@ -43,36 +44,6 @@ class MainInteractor: MainBusinessLogic, MainDataStore {
         self.fetcher = fetcher
     }
     
-//    func loadBackgroundImage(request: .) {
-//        Task {
-//            do {
-//                let data = try await fetcher.fetchRandomImage(of: 1)
-//
-//            } catch let error {
-//
-//            }
-//        }
-//    }
-    
     var presenter: MainPresentationLogic?
     var worker: MainWorker?
-    //var name: String = ""
-
-    // MARK: Do something (and send response to MainPresenter)
-
-//    func doSomething(request: Main.Something.Request) {
-//        worker = MainWorker()
-//        worker?.doSomeWork()
-//
-//        let response = Main.Something.Response()
-//        presenter?.presentSomething(response: response)
-//    }
-//
-//    func doSomethingElse(request: Main.SomethingElse.Request) {
-//        worker = MainWorker()
-//        worker?.doSomeOtherWork()
-//
-//        let response = Main.SomethingElse.Response()
-//        presenter?.presentSomethingElse(response: response)
-//    }
 }

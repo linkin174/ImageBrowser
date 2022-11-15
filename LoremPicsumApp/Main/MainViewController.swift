@@ -22,11 +22,22 @@ class MainViewController: UIViewController {
     var interactor: MainBusinessLogic?
     var router: (NSObjectProtocol & MainRoutingLogic & MainDataPassing)?
     
+    let randomImageBuilder: RandomImageBuilder
+    let galleryBuilder: GalleryBuilder
+    
+    let fetcher: NetworkFetcher
+    
     //MARK: Views
     
     private var imageView: UIImageView = {
        let view = UIImageView()
         view.contentMode = .scaleAspectFill
+        let blurEffect = UIBlurEffect(style: .regular)
+        let blurredView = UIVisualEffectView(effect: blurEffect)
+        blurredView.frame = view.bounds
+        blurredView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        blurredView.alpha = 1
+        view.addSubview(blurredView)
         return view
     }()
     
@@ -37,49 +48,66 @@ class MainViewController: UIViewController {
         return indicator
     }()
     
-    private var randomButton: UIButton = {
+    private lazy var randomButton: UIButton = {
        let button = UIButton()
         button.layer.cornerRadius = 12
         button.backgroundColor = .red
         button.setTitle("Show Random Image", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.layer.shadowColor = UIColor.black.cgColor
+        button.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.titleLabel?.layer.shadowRadius = 5
+        button.titleLabel?.layer.shadowOpacity = 0.5
         button.layer.shadowColor = UIColor.red.cgColor
         button.layer.shadowRadius = 5
         button.layer.shadowOffset = CGSize(width: 0, height: 4)
         button.layer.shadowOpacity = 0.5
+        button.addTarget(self, action: #selector(showRandomVC), for: .touchUpInside)
         return button
     }()
     
-    private var galleryButton: UIButton = {
+    private lazy var galleryButton: UIButton = {
        let button = UIButton()
         button.layer.cornerRadius = 12
         button.backgroundColor = .blue
         button.setTitle("Show Gallery", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 20)
+        button.titleLabel?.layer.shadowColor = UIColor.black.cgColor
+        button.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 2)
+        button.titleLabel?.layer.shadowRadius = 5
+        button.titleLabel?.layer.shadowOpacity = 0.5
         button.layer.shadowColor = UIColor.blue.cgColor
         button.layer.shadowRadius = 5
         button.layer.shadowOffset = CGSize(width: 0, height: 4)
         button.layer.shadowOpacity = 0.5
+        button.addTarget(self, action: #selector(showGalleryVC), for: .touchUpInside)
         return button
     }()
 
     // MARK: Object lifecycle
-
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    init(fetcher: NetworkFetcher, randomImageBuilder: RandomImageBuilder, galleryBuilder: GalleryBuilder) {
+        self.fetcher = fetcher
+        self.randomImageBuilder = randomImageBuilder
+        self.galleryBuilder = galleryBuilder
+        super.init(nibName: nil, bundle: nil)
         setup()
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
+//
+//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+//    }
+//
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
+    
+    
 
     // MARK: - Setup Clean Code Design Pattern 
 
     private func setup() {
         let viewController = self
-        let interactor = MainInteractor(fetcher: NetworkFetcher(networkService: NetworkService()))
+        let interactor = MainInteractor(fetcher: fetcher)
         let presenter = MainPresenter()
         let router = MainRouter()
         viewController.interactor = interactor
@@ -127,6 +155,14 @@ class MainViewController: UIViewController {
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.view.backgroundColor = .clear
     }
+    
+    @objc private func showRandomVC() {
+        router?.routeToRandomImageVC()
+    }
+    
+    @objc private func showGalleryVC() {
+        router?.routeToGalleryVC()
+    }
 
     // MARK: - View lifecycle
 
@@ -138,11 +174,11 @@ class MainViewController: UIViewController {
     }
 }
 
-struct MainViewController_Previews: PreviewProvider {
-    static var previews: some View {
-        MainViewController().preview()
-    }
-}
+//struct MainViewController_Previews: PreviewProvider {
+//    static var previews: some View {
+//        MainViewController(fetcher: NetworkFetcher(networkService: NetworkService()), randomImageBuilder: RandomImageComponent(parent: self)).preview()
+//    }
+//}
 
 extension MainViewController: MainDisplayLogic {
     func display(viewModel: Main.ViewModel) {

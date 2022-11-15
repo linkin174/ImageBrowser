@@ -13,8 +13,7 @@
 import UIKit
 
 protocol RandomImageBusinessLogic {
-    func doSomething(request: RandomImage.Something.Request)
-//    func doSomethingElse(request: RandomImage.SomethingElse.Request)
+    func makeRequest(request: RandomImage.Request)
 }
 
 protocol RandomImageDataStore {
@@ -22,25 +21,27 @@ protocol RandomImageDataStore {
 }
 
 class RandomImageInteractor: RandomImageBusinessLogic, RandomImageDataStore {
+    
     var presenter: RandomImagePresentationLogic?
     var worker: RandomImageWorker?
-    //var name: String = ""
-
-    // MARK: Do something (and send response to RandomImagePresenter)
-
-    func doSomething(request: RandomImage.Something.Request) {
-        worker = RandomImageWorker()
-        worker?.doSomeWork()
-
-        let response = RandomImage.Something.Response()
-        presenter?.presentSomething(response: response)
+    
+    private let fetcher: NetworkFetcher
+    
+    init(fetcher: NetworkFetcher) {
+        self.fetcher = fetcher
     }
-//
-//    func doSomethingElse(request: RandomImage.SomethingElse.Request) {
-//        worker = RandomImageWorker()
-//        worker?.doSomeOtherWork()
-//
-//        let response = RandomImage.SomethingElse.Response()
-//        presenter?.presentSomethingElse(response: response)
-//    }
+    
+    func makeRequest(request: RandomImage.Request) {
+        switch request {
+        case .loadRandomImage(let scale):
+            Task {
+                do {
+                    let data = try await fetcher.fetchRandomImage(of: scale)
+                    presenter?.present(response: .presentRandomImageFrom(data: data))
+                } catch let error {
+                    presenter?.present(response: .presentError(error: error))
+                }
+            }
+        }
+    }
 }

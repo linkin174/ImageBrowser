@@ -13,21 +13,22 @@
 import UIKit
 
 protocol RandomImagePresentationLogic {
-    func presentSomething(response: RandomImage.Something.Response)
+    func present(response: RandomImage.Response)
 }
 
 class RandomImagePresenter: RandomImagePresentationLogic {
     weak var viewController: RandomImageDisplayLogic?
-
-    // MARK: Parse and calc respnse from RandomImageInteractor and send simple view model to RandomImageViewController to be displayed
-
-    func presentSomething(response: RandomImage.Something.Response) {
-        let viewModel = RandomImage.Something.ViewModel()
-        viewController?.displaySomething(viewModel: viewModel)
+    
+    func present(response: RandomImage.Response) {
+        switch response {
+        case .presentRandomImageFrom(let data):
+            if let image = UIImage(data: data) {
+                viewController?.display(viewModel: .displayRandom(image: image))
+            }
+        case .presentError(let error):
+            if let error = error as? APIError {
+                viewController?.display(viewModel: .display(error: error.rawValue))
+            }
+        }
     }
-//
-//    func presentSomethingElse(response: RandomImage.SomethingElse.Response) {
-//        let viewModel = RandomImage.SomethingElse.ViewModel()
-//        viewController?.displaySomethingElse(viewModel: viewModel)
-//    }
 }

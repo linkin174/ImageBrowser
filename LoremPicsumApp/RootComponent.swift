@@ -14,12 +14,20 @@ final class RootComponent: BootstrapComponent {
         return shared { NetworkService() }
     }
     
-    var networkFetcher: NetworkFetcher {
+    var fetcher: NetworkFetcher {
         return shared { NetworkFetcher(networkService: networkService) }
     }
-//
+    
+    var randomImageComponent: RandomImageComponent {
+        RandomImageComponent(parent: self)
+    }
+    
+    var galleryComponent: GalleryComponent {
+        GalleryComponent(parent: self)
+    }
+
     var rootViewController: UIViewController {
-        MainViewController()
+        MainViewController(fetcher: fetcher, randomImageBuilder: randomImageComponent, galleryBuilder: galleryComponent)
     }
 
     var fetcherDiComponent: FetcherDiComponent {

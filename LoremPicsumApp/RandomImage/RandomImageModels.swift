@@ -12,43 +12,20 @@
 
 import UIKit
 
-enum RandomImage
-{
+enum RandomImage {
     // MARK: Use cases
 
-    enum Something
-    {
-        struct Request
-        {
-
-        }
-
-        struct Response
-        {
-
-        }
-
-        struct ViewModel
-        {
-
-        }
+    enum Request {
+        case loadRandomImage(scale: Int)
     }
     
-//    enum SomethingElse
-//    {
-//        struct Request
-//        {
-//
-//        }
-//
-//        struct Response
-//        {
-//
-//        }
-//
-//        struct ViewModel
-//        {
-//
-//        }
-//    }
+    enum Response {
+        case presentRandomImageFrom(data: Data)
+        case presentError(error: Error)
+    }
+    
+    enum ViewModel {
+        case displayRandom(image: UIImage)
+        case display(error: String)
+    }
 }
