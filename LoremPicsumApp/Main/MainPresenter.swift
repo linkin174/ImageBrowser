@@ -19,9 +19,13 @@ protocol MainPresentationLogic {
 class MainPresenter: MainPresentationLogic {
     func present(response: Main.Response) {
         switch response {
-        case .presentBackgroundImage(let data, let error):
-            let error = error as? APIError
-            viewController?.display(viewModel: .displayBackgroundImage(imageData: data, error: error?.rawValue))
+        case .presentBackgroundImage(let data):
+            if let image = UIImage(data: data) {
+                viewController?.display(viewModel: .displayBackgroundImage(image: image))
+            }
+        case .presentError(let error):
+            guard let error = error as? APIError else { return }
+            viewController?.display(viewModel: .displayError(text: error.rawValue))
         }
     }
     

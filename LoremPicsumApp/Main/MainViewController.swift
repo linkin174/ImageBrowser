@@ -10,15 +10,14 @@
 //  see http://clean-swift.com
 //
 
-import SwiftUI
 import SnapKit
+import SwiftUI
 
 protocol MainDisplayLogic: AnyObject {
     func display(viewModel: Main.ViewModel)
 }
 
 class MainViewController: UIViewController {
-    
     var interactor: MainBusinessLogic?
     var router: (NSObjectProtocol & MainRoutingLogic & MainDataPassing)?
     
@@ -27,10 +26,10 @@ class MainViewController: UIViewController {
     
     let fetcher: NetworkFetcher
     
-    //MARK: Views
+    // MARK: Views
     
     private var imageView: UIImageView = {
-       let view = UIImageView()
+        let view = UIImageView()
         view.contentMode = .scaleAspectFill
         let blurEffect = UIBlurEffect(style: .systemMaterialDark)
         let blurredView = UIVisualEffectView(effect: blurEffect)
@@ -50,7 +49,7 @@ class MainViewController: UIViewController {
     }()
     
     private lazy var randomButton: UIButton = {
-       let button = UIButton()
+        let button = UIButton()
         button.layer.cornerRadius = 12
         button.backgroundColor = .red
         button.setTitle("Show Random Image", for: .normal)
@@ -90,6 +89,7 @@ class MainViewController: UIViewController {
     }()
 
     // MARK: Object lifecycle
+
     init(fetcher: NetworkFetcher, randomImageBuilder: RandomImageBuilder?, galleryBuilder: GalleryBuilder?) {
         self.fetcher = fetcher
         self.randomImageBuilder = randomImageBuilder
@@ -98,13 +98,12 @@ class MainViewController: UIViewController {
         setup()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    
-
-    // MARK: - Setup Clean Code Design Pattern 
+    // MARK: - Setup Clean Code Design Pattern
 
     private func setup() {
         let viewController = self
@@ -155,6 +154,13 @@ class MainViewController: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.view.backgroundColor = .clear
+        
+        //Hide back arrow and place custom image to it
+        
+        navigationController?.navigationBar.backIndicatorImage = UIImage()
+        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage()
+        navigationItem.backBarButtonItem = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: nil, action: nil)
+       
     }
     
     @objc private func showRandomVC() {
@@ -185,20 +191,14 @@ struct MainViewController_Previews: PreviewProvider {
 extension MainViewController: MainDisplayLogic {
     func display(viewModel: Main.ViewModel) {
         switch viewModel {
-        case .displayBackgroundImage(let imageData, let error):
-            if let imageData {
-                DispatchQueue.main.async { [weak self] in
-                    self?.imageView.image = UIImage(data: imageData)
-                    self?.loadingIndicator.stopAnimating()
-                }
-            } else if let error {
-                DispatchQueue.main.async { [weak self] in
-                    let alert = UIAlertController(title: "OOPS",
-                                                  message: "Something went wrong: \(error)",
-                                                  preferredStyle: .alert)
-                    alert.addAction(UIAlertAction(title: "OK", style: .destructive))
-                    self?.present(alert, animated: true)
-                }
+        case .displayBackgroundImage(let image):
+            DispatchQueue.main.async { [unowned self] in
+                self.imageView.image = image
+                self.loadingIndicator.stopAnimating()
+            }
+        case .displayError(let text):
+            DispatchQueue.main.async { [unowned self] in
+                self.showAlert("OPPS", "Something went wrong. Error: \(text)")
             }
         }
     }

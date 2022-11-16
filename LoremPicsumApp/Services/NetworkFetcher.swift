@@ -31,15 +31,9 @@ final class NetworkFetcher {
         self.networkService = networkService
     }
     
-    func fetchRandomImage(of scale: Int) async throws -> Data {
-        var method = ""
-        switch scale {
-        case 1: method = API.randomImage1x
-        case 2: method = API.randomImage2x
-        default: method = API.randomImage3x
-        }
+    func fetchRandomImage() async throws -> Data {
         do {
-            return try await networkService.makeRequest(method, nil)
+            return try await networkService.makeRequest(API.randomImage, nil)
         } catch let error {
             throw error
         }

@@ -20,10 +20,12 @@ enum Main {
     }
     
     enum Response {
-        case presentBackgroundImage(data: Data?, error: Error?)
+        case presentBackgroundImage(data: Data)
+        case presentError(error: Error)
     }
     
     enum ViewModel {
-        case displayBackgroundImage(imageData: Data?, error: String?)
+        case displayBackgroundImage(image: UIImage)
+        case displayError(text: String)
     }
 }

@@ -41,6 +41,9 @@
 		70EF67BB2922B221006696C2 /* UIViewController + Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67BA2922B221006696C2 /* UIViewController + Preview.swift */; };
 		70EF67BD2923BB35006696C2 /* RandomImageComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67BC2923BB35006696C2 /* RandomImageComponent.swift */; };
 		70EF67BF2923C2FB006696C2 /* GalleryComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67BE2923C2FB006696C2 /* GalleryComponent.swift */; };
+		70EF67C32924F967006696C2 /* UIViewController + Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67C22924F967006696C2 /* UIViewController + Alert.swift */; };
+		70EF67C529250391006696C2 /* UIButton + Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67C429250391006696C2 /* UIButton + Animation.swift */; };
+		70EF67C729253B25006696C2 /* UIView + onTapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67C629253B25006696C2 /* UIView + onTapGesture.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -93,6 +96,9 @@
 		70EF67BA2922B221006696C2 /* UIViewController + Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Preview.swift"; sourceTree = "<group>"; };
 		70EF67BC2923BB35006696C2 /* RandomImageComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageComponent.swift; sourceTree = "<group>"; };
 		70EF67BE2923C2FB006696C2 /* GalleryComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GalleryComponent.swift; sourceTree = "<group>"; };
+		70EF67C22924F967006696C2 /* UIViewController + Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + Alert.swift"; sourceTree = "<group>"; };
+		70EF67C429250391006696C2 /* UIButton + Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIButton + Animation.swift"; sourceTree = "<group>"; };
+		70EF67C629253B25006696C2 /* UIView + onTapGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + onTapGesture.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -224,6 +230,9 @@
 			isa = PBXGroup;
 			children = (
 				70EF67BA2922B221006696C2 /* UIViewController + Preview.swift */,
+				70EF67C22924F967006696C2 /* UIViewController + Alert.swift */,
+				70EF67C429250391006696C2 /* UIButton + Animation.swift */,
+				70EF67C629253B25006696C2 /* UIView + onTapGesture.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -331,6 +340,7 @@
 				70EF679D29218B42006696C2 /* MainViewController.swift in Sources */,
 				70EF679929218B42006696C2 /* MainPresenter.swift in Sources */,
 				70EF67B529218BBA006696C2 /* GalleryRouter.swift in Sources */,
+				70EF67C529250391006696C2 /* UIButton + Animation.swift in Sources */,
 				70EF679A29218B42006696C2 /* MainWorker.swift in Sources */,
 				70EF67A829218BA3006696C2 /* RandomImageRouter.swift in Sources */,
 				70EF67B429218BBA006696C2 /* GalleryWorker.swift in Sources */,
@@ -344,8 +354,10 @@
 				702E48882921518D005C6C82 /* SceneDelegate.swift in Sources */,
 				70EF67AB29218BA3006696C2 /* RandomImageInteractor.swift in Sources */,
 				70EF67A729218BA3006696C2 /* RandomImageWorker.swift in Sources */,
+				70EF67C32924F967006696C2 /* UIViewController + Alert.swift in Sources */,
 				70EF67A929218BA3006696C2 /* RandomImageModels.swift in Sources */,
 				70EF67B729218BBA006696C2 /* GalleryViewController.swift in Sources */,
+				70EF67C729253B25006696C2 /* UIView + onTapGesture.swift in Sources */,
 				70EF67B829218BBA006696C2 /* GalleryInteractor.swift in Sources */,
 				70EF679E29218B42006696C2 /* MainInteractor.swift in Sources */,
 				70EF67AA29218BA3006696C2 /* RandomImageViewController.swift in Sources */,

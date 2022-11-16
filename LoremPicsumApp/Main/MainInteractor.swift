@@ -27,10 +27,10 @@ class MainInteractor: MainBusinessLogic, MainDataStore {
         case .loadBackgroundImage:
             Task {
                 do {
-                    let data = try await fetcher.fetchRandomImage(of: 2)
-                    presenter?.present(response: .presentBackgroundImage(data: data, error: nil))
+                    let data = try await fetcher.fetchRandomImage()
+                    presenter?.present(response: .presentBackgroundImage(data: data))
                 } catch let error {
-                    presenter?.present(response: .presentBackgroundImage(data: nil, error: error))
+                    presenter?.present(response: .presentError(error: error))
                 }
             }
         }

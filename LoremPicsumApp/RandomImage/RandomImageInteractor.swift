@@ -33,10 +33,10 @@ class RandomImageInteractor: RandomImageBusinessLogic, RandomImageDataStore {
     
     func makeRequest(request: RandomImage.Request) {
         switch request {
-        case .loadRandomImage(let scale):
+        case .loadRandomImage:
             Task {
                 do {
-                    let data = try await fetcher.fetchRandomImage(of: scale)
+                    let data = try await fetcher.fetchRandomImage()
                     presenter?.present(response: .presentRandomImageFrom(data: data))
                 } catch let error {
                     presenter?.present(response: .presentError(error: error))

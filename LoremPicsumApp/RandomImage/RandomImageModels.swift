@@ -16,7 +16,7 @@ enum RandomImage {
     // MARK: Use cases
 
     enum Request {
-        case loadRandomImage(scale: Int)
+        case loadRandomImage
     }
     
     enum Response {

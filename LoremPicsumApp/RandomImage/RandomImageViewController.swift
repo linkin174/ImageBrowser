@@ -23,14 +23,16 @@ class RandomImageViewController: UIViewController {
     
     let fetcher: NetworkFetcher
     
-    private var imageScale = 1
+    private var isInterfaceHidden = false
     
     // MARK: Views
     
-    private var imageView: UIImageView = {
+    private lazy var imageView: UIImageView = {
         let view = UIImageView()
+        view.isUserInteractionEnabled = true
         view.image = UIImage(named: "dummy")
         view.contentMode = .scaleAspectFill
+        view.onTapGesture(self, #selector(hideInterface))
         return view
     }()
     
@@ -45,11 +47,11 @@ class RandomImageViewController: UIViewController {
     private lazy var loadButton: UIButton = {
         let button = UIButton()
         button.backgroundColor = UIColor.blue
-        button.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
+        button.setImage(UIImage(systemName: "arrow.triangle.2.circlepath"), for: .normal)
         button.setImage(UIImage(), for: .selected)
         button.imageView?.tintColor = UIColor.white
         button.imageView?.contentMode = .scaleAspectFit
-        button.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 8, right: 5)
+        button.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         button.layer.cornerRadius = 30
@@ -58,6 +60,7 @@ class RandomImageViewController: UIViewController {
         button.layer.shadowRadius = 5
         button.layer.shadowOpacity = 0.5
         button.layer.shouldRasterize = true
+        button.layer.rasterizationScale = UIScreen.main.scale
         button.addTarget(self, action: #selector(loadImage), for: .touchUpInside)
         return button
     }()
@@ -68,26 +71,14 @@ class RandomImageViewController: UIViewController {
         button.backgroundColor = UIColor.white
         button.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
         button.imageView?.tintColor = .black
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 3, right: 0)
         button.layer.shadowColor = UIColor.black.cgColor
         button.layer.shadowOffset = CGSize(width: 0, height: 5)
         button.layer.shadowRadius = 5
         button.layer.shadowOpacity = 0.5
         button.layer.shouldRasterize = true
-        return button
-    }()
-    
-    private lazy var scaleButton: UIButton = {
-        let button = UIButton()
-        button.layer.cornerRadius = 20
-        button.backgroundColor = UIColor.white
-        button.setTitle("1x", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 5)
-        button.layer.shadowRadius = 5
-        button.layer.shadowOpacity = 0.5
-        button.layer.shouldRasterize = true
-        button.addTarget(self, action: #selector(changeImageScale), for: .touchUpInside)
+        button.layer.rasterizationScale = UIScreen.main.scale
+        button.addTarget(self, action: #selector(shareImage), for: .touchUpInside)
         return button
     }()
 
@@ -120,10 +111,9 @@ class RandomImageViewController: UIViewController {
     }
     
     private func setupConstraints() {
-        view.addSubview(imageView)
-        view.addSubview(loadButton)
-        view.addSubview(shareButton)
-        view.addSubview(scaleButton)
+        self.view.addSubview(imageView)
+        self.view.addSubview(loadButton)
+        self.view.addSubview(shareButton)
         loadButton.addSubview(indicator)
         
         imageView.snp.makeConstraints { make in
@@ -142,31 +132,38 @@ class RandomImageViewController: UIViewController {
             make.width.height.equalTo(40)
         }
 
-        scaleButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().inset(40)
-            make.bottom.equalToSuperview().inset(40)
-            make.width.height.equalTo(40)
-        }
-
         indicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
     }
-    
-    @objc private func changeImageScale() {
-        if imageScale < 3 {
-            imageScale += 1
-        } else {
-            imageScale = 1
-        }
-        scaleButton.setTitle("\(imageScale)x", for: .normal)
-    }
+
     
     @objc private func loadImage() {
-        interactor?.makeRequest(request: .loadRandomImage(scale: imageScale))
+        interactor?.makeRequest(request: .loadRandomImage)
         loadButton.isSelected = true
         indicator.startAnimating()
+        shareButton.isEnabled = false
     }
+    
+    @objc private func shareImage() {
+        guard let image = imageView.image else { return }
+        let shareSheet = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        present(shareSheet, animated: true)
+    }
+    
+    @objc private func hideInterface() {
+        if isInterfaceHidden {
+            shareButton.animateFade(.fadeIn, 0.5)
+            loadButton.animateFade(.fadeIn, 0.5)
+            navigationItem.setHidesBackButton(false, animated: true)
+        } else {
+            shareButton.animateFade(.fadeOut, 0.5)
+            loadButton.animateFade(.fadeOut, 0.5)
+            navigationItem.setHidesBackButton(true, animated: true)
+        }
+        isInterfaceHidden.toggle()
+    }
+
 
     // MARK: - View lifecycle
 
@@ -174,6 +171,7 @@ class RandomImageViewController: UIViewController {
         super.viewDidLoad()
         setupConstraints()
         loadImage()
+        navigationController?.navigationBar.tintColor = UIColor.red
     }
 }
 
@@ -185,9 +183,11 @@ extension RandomImageViewController: RandomImageDisplayLogic {
                 self.imageView.image = image
                 self.loadButton.isSelected = false
                 self.indicator.stopAnimating()
+                self.shareButton.animateFade(.fadeIn, 0.5)
+                self.shareButton.isEnabled = true
             }
         case .display(let error):
-            print(error)
+            showAlert("Error Loading Image", "Something went wrong: \(error). Check your internet connection and try again")
         }
     }
 }
