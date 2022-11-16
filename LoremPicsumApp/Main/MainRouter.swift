@@ -22,6 +22,7 @@ protocol MainDataPassing {
 }
 
 class MainRouter: NSObject, MainRoutingLogic, MainDataPassing {
+    
     weak var viewController: MainViewController?
     var dataStore: MainDataStore?
 
@@ -29,13 +30,13 @@ class MainRouter: NSObject, MainRoutingLogic, MainDataPassing {
 
     func routeToRandomImageVC() {
         guard let source = viewController else { return }
-        let destinationVC = source.randomImageBuilder.randomImageViewController
-        navigateToSomewhere(source: source, destination: destinationVC)
+        guard let destination = source.randomImageBuilder?.randomImageViewController else { return }
+        navigateToSomewhere(source: source, destination: destination)
     }
     
     func routeToGalleryVC() {
         guard let source = viewController else { return }
-        let destination = source.galleryBuilder.galleryViewController
+        guard let destination = source.galleryBuilder?.galleryViewController else { return }
         navigateToSomewhere(source: source, destination: destination)
     }
 

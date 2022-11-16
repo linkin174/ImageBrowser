@@ -10,18 +10,86 @@
 //  see http://clean-swift.com
 //
 
-import UIKit
+import SnapKit
+import SwiftUI
 
 protocol RandomImageDisplayLogic: AnyObject {
     func display(viewModel: RandomImage.ViewModel)
 }
 
-class RandomImageViewController: UIViewController, RandomImageDisplayLogic {
-
+class RandomImageViewController: UIViewController {
     var interactor: RandomImageBusinessLogic?
     var router: (NSObjectProtocol & RandomImageRoutingLogic & RandomImageDataPassing)?
     
     let fetcher: NetworkFetcher
+    
+    private var imageScale = 1
+    
+    // MARK: Views
+    
+    private var imageView: UIImageView = {
+        let view = UIImageView()
+        view.image = UIImage(named: "dummy")
+        view.contentMode = .scaleAspectFill
+        return view
+    }()
+    
+    private var indicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = UIColor.white
+        indicator.startAnimating()
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
+    
+    private lazy var loadButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = UIColor.blue
+        button.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
+        button.setImage(UIImage(), for: .selected)
+        button.imageView?.tintColor = UIColor.white
+        button.imageView?.contentMode = .scaleAspectFit
+        button.imageEdgeInsets = UIEdgeInsets(top: 5, left: 5, bottom: 8, right: 5)
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
+        button.layer.cornerRadius = 30
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 5)
+        button.layer.shadowRadius = 5
+        button.layer.shadowOpacity = 0.5
+        button.layer.shouldRasterize = true
+        button.addTarget(self, action: #selector(loadImage), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var shareButton: UIButton = {
+        let button = UIButton()
+        button.layer.cornerRadius = 20
+        button.backgroundColor = UIColor.white
+        button.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
+        button.imageView?.tintColor = .black
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 5)
+        button.layer.shadowRadius = 5
+        button.layer.shadowOpacity = 0.5
+        button.layer.shouldRasterize = true
+        return button
+    }()
+    
+    private lazy var scaleButton: UIButton = {
+        let button = UIButton()
+        button.layer.cornerRadius = 20
+        button.backgroundColor = UIColor.white
+        button.setTitle("1x", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 0, height: 5)
+        button.layer.shadowRadius = 5
+        button.layer.shadowOpacity = 0.5
+        button.layer.shouldRasterize = true
+        button.addTarget(self, action: #selector(changeImageScale), for: .touchUpInside)
+        return button
+    }()
 
     // MARK: Object lifecycle
     
@@ -31,21 +99,12 @@ class RandomImageViewController: UIViewController, RandomImageDisplayLogic {
         setup()
     }
     
+    @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-//    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-//        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-//        setup()
-//    }
-//
-//    required init?(coder aDecoder: NSCoder) {
-//        super.init(coder: aDecoder)
-//        setup()
-//    }
-
-    // MARK: - Setup Clean Code Design Pattern 
+    // MARK: Private methods
 
     private func setup() {
         let viewController = self
@@ -59,21 +118,83 @@ class RandomImageViewController: UIViewController, RandomImageDisplayLogic {
         router.viewController = viewController
         router.dataStore = interactor
     }
+    
+    private func setupConstraints() {
+        view.addSubview(imageView)
+        view.addSubview(loadButton)
+        view.addSubview(shareButton)
+        view.addSubview(scaleButton)
+        loadButton.addSubview(indicator)
+        
+        imageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+        
+        loadButton.snp.makeConstraints { make in
+            make.centerX.equalToSuperview()
+            make.bottom.equalToSuperview().inset(40)
+            make.width.height.equalTo(60)
+        }
+
+        shareButton.snp.makeConstraints { make in
+            make.trailing.equalTo(imageView.snp.trailing).inset(40)
+            make.bottom.equalToSuperview().inset(40)
+            make.width.height.equalTo(40)
+        }
+
+        scaleButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(40)
+            make.bottom.equalToSuperview().inset(40)
+            make.width.height.equalTo(40)
+        }
+
+        indicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+    }
+    
+    @objc private func changeImageScale() {
+        if imageScale < 3 {
+            imageScale += 1
+        } else {
+            imageScale = 1
+        }
+        scaleButton.setTitle("\(imageScale)x", for: .normal)
+    }
+    
+    @objc private func loadImage() {
+        interactor?.makeRequest(request: .loadRandomImage(scale: imageScale))
+        loadButton.isSelected = true
+        indicator.startAnimating()
+    }
 
     // MARK: - View lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .green
+        setupConstraints()
+        loadImage()
     }
+}
 
-    // MARK: - display view model from RandomImagePresenter
-
+extension RandomImageViewController: RandomImageDisplayLogic {
     func display(viewModel: RandomImage.ViewModel) {
-        
+        switch viewModel {
+        case .displayRandom(let image):
+            DispatchQueue.main.async { [unowned self] in
+                self.imageView.image = image
+                self.loadButton.isSelected = false
+                self.indicator.stopAnimating()
+            }
+        case .display(let error):
+            print(error)
+        }
     }
-//
-//    func displaySomethingElse(viewModel: RandomImage.SomethingElse.ViewModel) {
-//        // do sometingElse with viewModel
-//    }
+}
+
+struct RandomImageVC_Previews: PreviewProvider {
+    static var previews: some View {
+        RandomImageViewController(fetcher: NetworkFetcher(networkService: NetworkService()))
+            .preview()
+    }
 }
