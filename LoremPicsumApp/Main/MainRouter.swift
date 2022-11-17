@@ -43,6 +43,6 @@ class MainRouter: NSObject, MainRoutingLogic, MainDataPassing {
     // MARK: Navigation to other screen
 
     private func navigateToSomewhere(source: UIViewController, destination: UIViewController) {
-        source.show(destination, sender: nil)
+        source.navigationController?.pushViewController(destination, animated: true)
     }
 }
