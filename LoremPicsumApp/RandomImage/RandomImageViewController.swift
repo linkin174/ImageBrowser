@@ -177,7 +177,6 @@ class RandomImageViewController: UIViewController {
         super.viewDidLoad()
         setupConstraints()
         loadImage()
-        navigationItem.setHidesBackButton(true, animated: true)
         navigationItem.leftBarButtonItem = backNavigationButton
     }
 }

@@ -154,7 +154,6 @@ class MainViewController: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.view.backgroundColor = .clear
-        navigationItem.setHidesBackButton(true, animated: true)
     }
     
     @objc private func showRandomVC() {
