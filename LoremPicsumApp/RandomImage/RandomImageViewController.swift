@@ -46,7 +46,7 @@ class RandomImageViewController: UIViewController {
     
     private lazy var loadButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = UIColor.blue
+        button.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
         button.setImage(UIImage(systemName: "arrow.triangle.2.circlepath"), for: .normal)
         button.setImage(UIImage(), for: .selected)
         button.imageView?.tintColor = UIColor.white
@@ -78,7 +78,7 @@ class RandomImageViewController: UIViewController {
         customView.image = UIImage(systemName: "arrowshape.turn.up.backward.fill")
         customView.image = customView.image?.resizableImage(withCapInsets: UIEdgeInsets(), resizingMode: .stretch)
         customView.image = customView.image?.withRenderingMode(.alwaysTemplate)
-        customView.tintColor = .blue
+        customView.tintColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
         customView.dropShadow(color: .black, offsetX: 2, offsetY: 3)
         button.customView?.onTapGesture(self, #selector(goBackToMainView))
         return button
