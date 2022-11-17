@@ -55,12 +55,7 @@ class RandomImageViewController: UIViewController {
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         button.layer.cornerRadius = 30
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 5)
-        button.layer.shadowRadius = 5
-        button.layer.shadowOpacity = 0.5
-        button.layer.shouldRasterize = true
-        button.layer.rasterizationScale = UIScreen.main.scale
+        button.dropShadow(color: .black, offsetX: 0, offsetY: 5)
         button.addTarget(self, action: #selector(loadImage), for: .touchUpInside)
         return button
     }()
@@ -72,13 +67,20 @@ class RandomImageViewController: UIViewController {
         button.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
         button.imageView?.tintColor = .black
         button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 3, right: 0)
-        button.layer.shadowColor = UIColor.black.cgColor
-        button.layer.shadowOffset = CGSize(width: 0, height: 5)
-        button.layer.shadowRadius = 5
-        button.layer.shadowOpacity = 0.5
-        button.layer.shouldRasterize = true
-        button.layer.rasterizationScale = UIScreen.main.scale
+        button.dropShadow(color: .black, offsetX: 0, offsetY: 5)
         button.addTarget(self, action: #selector(shareImage), for: .touchUpInside)
+        return button
+    }()
+    
+    private lazy var backNavigationButton: UIBarButtonItem = {
+        let customView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        let button = UIBarButtonItem(customView: customView)
+        customView.image = UIImage(systemName: "arrowshape.turn.up.backward.fill")
+        customView.image = customView.image?.resizableImage(withCapInsets: UIEdgeInsets(), resizingMode: .stretch)
+        customView.image = customView.image?.withRenderingMode(.alwaysTemplate)
+        customView.tintColor = .blue
+        customView.dropShadow(color: .black, offsetX: 2, offsetY: 3)
+        button.customView?.onTapGesture(self, #selector(goBackToMainView))
         return button
     }()
 
@@ -155,13 +157,17 @@ class RandomImageViewController: UIViewController {
         if isInterfaceHidden {
             shareButton.animateFade(.fadeIn, 0.5)
             loadButton.animateFade(.fadeIn, 0.5)
-            navigationItem.setHidesBackButton(false, animated: true)
+            backNavigationButton.customView?.animateFade(.fadeIn, 0.5)
         } else {
             shareButton.animateFade(.fadeOut, 0.5)
             loadButton.animateFade(.fadeOut, 0.5)
-            navigationItem.setHidesBackButton(true, animated: true)
+            backNavigationButton.customView?.animateFade(.fadeOut, 0.5)
         }
         isInterfaceHidden.toggle()
+    }
+    
+    @objc private func goBackToMainView() {
+        navigationController?.popViewController(animated: true)
     }
 
 
@@ -171,7 +177,8 @@ class RandomImageViewController: UIViewController {
         super.viewDidLoad()
         setupConstraints()
         loadImage()
-        navigationController?.navigationBar.tintColor = UIColor.red
+        navigationItem.setHidesBackButton(true, animated: true)
+        navigationItem.leftBarButtonItem = backNavigationButton
     }
 }
 

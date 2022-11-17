@@ -7,9 +7,9 @@
 
 import UIKit
 
-extension UIButton {
+extension UIView {
     
-    func animateFade(_ animationType: ButtonAnimationType, _ duration: Double) {
+    func animateFade(_ animationType: FadeType, _ duration: Double) {
         UIView.animate(withDuration: duration,
                        delay: 0,
                        options: [.curveEaseInOut]) {
@@ -25,6 +25,6 @@ extension UIButton {
     }
 }
 
-enum ButtonAnimationType {
+enum FadeType {
     case fadeIn, fadeOut
 }

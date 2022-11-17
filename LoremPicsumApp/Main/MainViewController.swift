@@ -154,13 +154,7 @@ class MainViewController: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.view.backgroundColor = .clear
-        
-        //Hide back arrow and place custom image to it
-        
-        navigationController?.navigationBar.backIndicatorImage = UIImage()
-        navigationController?.navigationBar.backIndicatorTransitionMaskImage = UIImage()
-        navigationItem.backBarButtonItem = UIBarButtonItem(image: UIImage(named: "back"), style: .plain, target: nil, action: nil)
-       
+        navigationItem.setHidesBackButton(true, animated: true)
     }
     
     @objc private func showRandomVC() {
