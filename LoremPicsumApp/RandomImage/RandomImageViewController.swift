@@ -79,7 +79,7 @@ class RandomImageViewController: UIViewController {
         customView.image = customView.image?.resizableImage(withCapInsets: UIEdgeInsets(), resizingMode: .stretch)
         customView.image = customView.image?.withRenderingMode(.alwaysTemplate)
         customView.tintColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
-        customView.dropShadow(color: .black, offsetX: 2, offsetY: 3)
+        customView.dropShadow(color: .black, offsetX: 2, offsetY: 3, radius: 3)
         button.customView?.onTapGesture(self, #selector(goBackToMainView))
         return button
     }()
@@ -138,6 +138,14 @@ class RandomImageViewController: UIViewController {
             make.center.equalToSuperview()
         }
     }
+    
+    private func animateImageView(with image: UIImage) {
+        UIView.transition(with: imageView,
+                          duration: 0.7,
+                          options: .transitionCrossDissolve) {
+            self.imageView.image = image
+        }
+    }
 
     
     @objc private func loadImage() {
@@ -186,7 +194,7 @@ extension RandomImageViewController: RandomImageDisplayLogic {
         switch viewModel {
         case .displayRandom(let image):
             DispatchQueue.main.async { [unowned self] in
-                self.imageView.image = image
+                self.animateImageView(with: image)
                 self.loadButton.isSelected = false
                 self.indicator.stopAnimating()
                 self.shareButton.animateFade(.fadeIn, 0.5)

@@ -12,6 +12,7 @@
 
 import SnapKit
 import SwiftUI
+import UIKit
 
 protocol MainDisplayLogic: AnyObject {
     func display(viewModel: Main.ViewModel)
@@ -26,6 +27,8 @@ class MainViewController: UIViewController {
     
     let fetcher: NetworkFetcher
     
+    private var buttonOffset = UIScreen.main.bounds.maxY
+    
     // MARK: Views
     
     private var imageView: UIImageView = {
@@ -37,6 +40,7 @@ class MainViewController: UIViewController {
         blurredView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         blurredView.alpha = 0.8
         view.addSubview(blurredView)
+        view.alpha = 0
         return view
     }()
     
@@ -123,6 +127,7 @@ class MainViewController: UIViewController {
         view.addSubview(loadingIndicator)
         view.addSubview(randomButton)
         view.addSubview(galleryButton)
+        let maxYOffset = UIScreen.main.bounds.midY + 50
         
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -130,19 +135,19 @@ class MainViewController: UIViewController {
         
         loadingIndicator.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(UIScreen.main.bounds.maxY / 2 - 50)
+            make.bottom.equalToSuperview().inset(30)
         }
         
         randomButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(-40)
+            make.centerY.equalToSuperview().offset(maxYOffset)
             make.width.equalToSuperview().inset(40)
             make.height.equalTo(40)
         }
         
         galleryButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(40)
+            make.centerY.equalToSuperview().offset(maxYOffset)
             make.width.equalToSuperview().inset(40)
             make.height.equalTo(40)
         }
@@ -154,6 +159,36 @@ class MainViewController: UIViewController {
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.isTranslucent = true
         navigationController?.view.backgroundColor = .clear
+    }
+    
+    private func showButtons() {
+        UIView.animate(withDuration: 1, delay: 0.25, usingSpringWithDamping: 0.7, initialSpringVelocity: 1) {
+            self.galleryButton.snp.updateConstraints { make in
+                make.centerY.equalToSuperview().offset(40)
+            }
+            self.randomButton.snp.updateConstraints { make in
+                make.centerY.equalToSuperview().offset(-40)
+            }
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    private func animateImageView() {
+        UIView.animate(withDuration: 0.8) {
+            self.imageView.alpha = 1
+        }
+    }
+    
+    private func animateCorner() {
+        CATransaction.begin()
+        CATransaction.setAnimationDuration(3)
+        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut))
+        let animation = CABasicAnimation(keyPath: #keyPath(CALayer.cornerRadius))
+        animation.fromValue = self.galleryButton.layer.cornerRadius
+        animation.toValue = 30
+        self.galleryButton.layer.cornerRadius = 30
+        self.galleryButton.layer.add(animation, forKey: #keyPath(CALayer.cornerRadius))
+        CATransaction.commit()
     }
     
     @objc private func showRandomVC() {
@@ -172,6 +207,11 @@ class MainViewController: UIViewController {
         setupConstaints()
         interactor?.makeRequest(request: .loadBackgroundImage)
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        showButtons()
+    }
 }
 
 struct MainViewController_Previews: PreviewProvider {
@@ -188,6 +228,7 @@ extension MainViewController: MainDisplayLogic {
             DispatchQueue.main.async { [unowned self] in
                 self.imageView.image = image
                 self.loadingIndicator.stopAnimating()
+                self.animateImageView()
             }
         case .displayError(let text):
             DispatchQueue.main.async { [unowned self] in
