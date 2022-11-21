@@ -20,8 +20,8 @@ protocol NetworkingProtocol {
 }
 
 final class NetworkService: NetworkingProtocol {
-    
-    func makeRequest(_ method: String, _ parameters: [String : String]? = nil) async throws -> Data {
+
+    func makeRequest(_ method: String, _ parameters: [String: String]? = nil) async throws -> Data {
         guard let url = createURL(method, parameters) else { throw APIError.badURL }
         var request = URLRequest(url: url)
         request.timeoutInterval = 10
@@ -36,7 +36,7 @@ final class NetworkService: NetworkingProtocol {
             throw error
         }
     }
-    
+
     private func createURL(_ method: String, _ parameters: [String: String]?) -> URL? {
         var components = URLComponents()
         components.scheme = API.scheme

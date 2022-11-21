@@ -13,38 +13,39 @@
 import UIKit
 
 @objc protocol RandomImageRoutingLogic {
-    //func routeToSomewhere(segue: UIStoryboardSegue?)
+    // func routeToSomewhere(segue: UIStoryboardSegue?)
 }
 
 protocol RandomImageDataPassing {
     var dataStore: RandomImageDataStore? { get }
 }
 
-class RandomImageRouter: NSObject, RandomImageRoutingLogic, RandomImageDataPassing {
+final class RandomImageRouter: NSObject, RandomImageRoutingLogic, RandomImageDataPassing {
     weak var viewController: RandomImageViewController?
     var dataStore: RandomImageDataStore?
 
 // MARK: Routing (navigating to other screens)
 
-//func routeToSomewhere(segue: UIStoryboardSegue?) {
+// func routeToSomewhere(segue: UIStoryboardSegue?) {
 //    if let segue = segue {
 //        let destinationVC = segue.destination as! SomewhereViewController
 //        var destinationDS = destinationVC.router!.dataStore!
 //        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
 //    } else {
 //        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        let destinationVC = storyboard.instantiateViewController(withIdentifier: "SomewhereViewController") as! SomewhereViewController
+//        let destinationVC = storyboard.instantiateViewController(withIdentifier: "SomewhereViewController")
+//            as! SomewhereViewController
 //        var destinationDS = destinationVC.router!.dataStore!
 //        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
 //        navigateToSomewhere(source: viewController!, destination: destinationVC)
 //    }
-//}
+// }
 
 // MARK: Navigation to other screen
 
-//func navigateToSomewhere(source: RandomImageViewController, destination: SomewhereViewController) {
+// func navigateToSomewhere(source: RandomImageViewController, destination: SomewhereViewController) {
 //    source.show(destination, sender: nil)
-//}
+// }
 
 // MARK: Passing data to other screen
 

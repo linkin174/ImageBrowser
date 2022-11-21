@@ -15,24 +15,25 @@ import SwiftUI
 import UIKit
 
 protocol MainDisplayLogic: AnyObject {
-    func display(viewModel: Main.ViewModel)
+    func display(viewModel: Main.Display)
 }
 
-class MainViewController: UIViewController {
-    var interactor: MainBusinessLogic?
-    var router: (NSObjectProtocol & MainRoutingLogic & MainDataPassing)?
-    
+final class MainViewController: UIViewController {
+    // MARK: Public Properties
+
     let randomImageBuilder: RandomImageBuilder?
     let galleryBuilder: GalleryBuilder?
-    
-    let fetcher: NetworkFetcher
-    
-    private var buttonOffset = UIScreen.main.bounds.maxY
-    
+
+    // MARK: Private properties
+
+    private var interactor: MainBusinessLogic?
+    private var router: (NSObjectProtocol & MainRoutingLogic & MainDataPassing)?
+    private let fetcher: NetworkFetcher
+
     // MARK: Views
-    
-    private var imageView: UIImageView = {
-        let view = UIImageView()
+
+    private lazy var imageView: UIImageView = {
+        let view = UIImageView(frame: view.bounds)
         view.contentMode = .scaleAspectFill
         let blurEffect = UIBlurEffect(style: .systemMaterialDark)
         let blurredView = UIVisualEffectView(effect: blurEffect)
@@ -43,15 +44,15 @@ class MainViewController: UIViewController {
         view.alpha = 0
         return view
     }()
-    
-    private var loadingIndicator: UIActivityIndicatorView = {
+
+    private let loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.hidesWhenStopped = true
         indicator.startAnimating()
         indicator.color = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
         return indicator
     }()
-    
+
     private lazy var randomButton: UIButton = {
         let button = UIButton()
         button.layer.cornerRadius = 12
@@ -62,16 +63,11 @@ class MainViewController: UIViewController {
         button.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 2)
         button.titleLabel?.layer.shadowRadius = 5
         button.titleLabel?.layer.shadowOpacity = 0.5
-        button.layer.shadowColor = UIColor.red.cgColor
-        button.layer.shadowRadius = 5
-        button.layer.shadowOffset = CGSize(width: 0, height: 4)
-        button.layer.shadowOpacity = 0.5
-        button.layer.shouldRasterize = true
-        button.layer.rasterizationScale = UIScreen.main.scale
+        button.dropShadow(color: .red, offsetX: 0, offsetY: 4)
         button.addTarget(self, action: #selector(showRandomVC), for: .touchUpInside)
         return button
     }()
-    
+
     private lazy var galleryButton: UIButton = {
         let button = UIButton(type: .custom)
         button.layer.cornerRadius = 12
@@ -82,17 +78,12 @@ class MainViewController: UIViewController {
         button.titleLabel?.layer.shadowOffset = CGSize(width: 0, height: 2)
         button.titleLabel?.layer.shadowRadius = 5
         button.titleLabel?.layer.shadowOpacity = 0.5
-        button.layer.shadowColor = UIColor.blue.cgColor
-        button.layer.shadowRadius = 5
-        button.layer.shadowOffset = CGSize(width: 0, height: 4)
-        button.layer.shadowOpacity = 0.5
-        button.layer.shouldRasterize = true
-        button.layer.rasterizationScale = UIScreen.main.scale
+        button.dropShadow(color: .blue, offsetX: 0, offsetY: 4)
         button.addTarget(self, action: #selector(showGalleryVC), for: .touchUpInside)
         return button
     }()
 
-    // MARK: Object lifecycle
+    // MARK: Initializers
 
     init(fetcher: NetworkFetcher, randomImageBuilder: RandomImageBuilder?, galleryBuilder: GalleryBuilder?) {
         self.fetcher = fetcher
@@ -101,13 +92,22 @@ class MainViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         setup()
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Setup Clean Code Design Pattern
+
+    // MARK: View lifecycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        setupConstaints()
+        interactor?.makeRequest(request: .loadBackgroundImage)
+    }
+
+    // MARK: Setup Module
 
     private func setup() {
         let viewController = self
@@ -121,46 +121,36 @@ class MainViewController: UIViewController {
         router.viewController = viewController
         router.dataStore = interactor
     }
-    
+
+    // MARK: Private Methods
+
     private func setupConstaints() {
         view.addSubview(imageView)
         view.addSubview(loadingIndicator)
         view.addSubview(randomButton)
         view.addSubview(galleryButton)
-        let maxYOffset = UIScreen.main.bounds.midY + 50
-        
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-        
+        let buttonOffset = UIScreen.main.bounds.midY + 50
+
         loadingIndicator.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(30)
         }
-        
+
         randomButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(maxYOffset)
+            make.centerY.equalToSuperview().offset(buttonOffset)
             make.width.equalToSuperview().inset(40)
             make.height.equalTo(40)
         }
-        
+
         galleryButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(maxYOffset)
+            make.centerY.equalToSuperview().offset(buttonOffset)
             make.width.equalToSuperview().inset(40)
             make.height.equalTo(40)
         }
     }
-    
-    private func setupNavigationBar() {
-        // Make navigation bar invisible
-        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.navigationBar.isTranslucent = true
-        navigationController?.view.backgroundColor = .clear
-    }
-    
+
     private func showButtons() {
         UIView.animate(withDuration: 1, delay: 0.25, usingSpringWithDamping: 0.7, initialSpringVelocity: 1) {
             self.galleryButton.snp.updateConstraints { make in
@@ -172,63 +162,43 @@ class MainViewController: UIViewController {
             self.view.layoutIfNeeded()
         }
     }
-    
+
     private func animateImageView() {
         UIView.animate(withDuration: 0.8) {
             self.imageView.alpha = 1
         }
     }
-    
-    private func animateCorner() {
-        CATransaction.begin()
-        CATransaction.setAnimationDuration(3)
-        CATransaction.setAnimationTimingFunction(CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut))
-        let animation = CABasicAnimation(keyPath: #keyPath(CALayer.cornerRadius))
-        animation.fromValue = self.galleryButton.layer.cornerRadius
-        animation.toValue = 30
-        self.galleryButton.layer.cornerRadius = 30
-        self.galleryButton.layer.add(animation, forKey: #keyPath(CALayer.cornerRadius))
-        CATransaction.commit()
-    }
-    
+
     @objc private func showRandomVC() {
         router?.routeToRandomImageVC()
     }
-    
+
     @objc private func showGalleryVC() {
         router?.routeToGalleryVC()
     }
-
-    // MARK: - View lifecycle
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupNavigationBar()
-        setupConstaints()
-        interactor?.makeRequest(request: .loadBackgroundImage)
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        showButtons()
-    }
 }
+
+// MARK: Preview
 
 struct MainViewController_Previews: PreviewProvider {
     static var previews: some View {
-        MainViewController(fetcher: NetworkFetcher(networkService: NetworkService()), randomImageBuilder: nil, galleryBuilder: nil)
-            .preview()
+        MainViewController(fetcher: NetworkFetcher(networkService: NetworkService()),
+                           randomImageBuilder: nil, galleryBuilder: nil)
+            .makePreview()
     }
 }
 
+// MARK: Extensions
+
 extension MainViewController: MainDisplayLogic {
-    func display(viewModel: Main.ViewModel) {
+    func display(viewModel: Main.Display) {
         switch viewModel {
         case .displayBackgroundImage(let image):
             DispatchQueue.main.async { [unowned self] in
-                self.imageView.image = image
-                self.loadingIndicator.stopAnimating()
-                self.animateImageView()
+                imageView.image = image
+                loadingIndicator.stopAnimating()
+                animateImageView()
+                showButtons()
             }
         case .displayError(let text):
             DispatchQueue.main.async { [unowned self] in

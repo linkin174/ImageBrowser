@@ -10,36 +10,89 @@
 //  see http://clean-swift.com
 //
 
-import UIKit
+import SnapKit
+import SwiftUI
 
-protocol GalleryDisplayLogic: AnyObject {
-    func displaySomething(viewModel: Gallery.Something.ViewModel)
-//    func displaySomethingElse(viewModel: Gallery.SomethingElse.ViewModel)
+struct GalleryConstants {
+    static let defaultEdgeInset: CGFloat = 8
 }
 
-class GalleryViewController: UIViewController, GalleryDisplayLogic {
+protocol GalleryDisplayLogic: AnyObject {
+    func display(photos: [Photo])
+    func display(errorMessage: String)
+}
+
+class GalleryViewController: UIViewController {
+    // MARK: Public Properties
+
     var interactor: GalleryBusinessLogic?
     var router: (NSObjectProtocol & GalleryRoutingLogic & GalleryDataPassing)?
-    
     let fetcher: NetworkFetcher
 
-    // MARK: Object lifecycle
-    
+    // MARK: Private properties
+
+    private var photos: [Photo] = [] {
+        didSet {
+            collectionView.reloadData()
+        }
+    }
+
+    private var lastContentOffset = CGPoint(x: 0, y: 0)
+
+    // MARK: Views
+
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let screenWidth = UIScreen.main.bounds.maxX
+        let defaultInset = GalleryConstants.defaultEdgeInset
+        let itemSapicing = defaultInset / 2 // Same spacing between cells and edges of the screen
+        let cellEdgeSize = screenWidth / 2 - defaultInset * 2 + itemSapicing
+        layout.itemSize = CGSize(width: cellEdgeSize, height: cellEdgeSize)
+        layout.minimumLineSpacing = defaultInset
+        layout.minimumInteritemSpacing = defaultInset
+        layout.sectionInset = UIEdgeInsets(top: defaultInset,
+                                           left: defaultInset,
+                                           bottom: defaultInset,
+                                           right: defaultInset)
+        let collection = UICollectionView(frame: view.frame,
+                                          collectionViewLayout: layout)
+        collection.backgroundColor = .clear
+        return collection
+    }()
+
+    private lazy var backNavigationButton: UIBarButtonItem = {
+        let button = UIButton(type: .custom)
+        button.setBackgroundImage(UIImage(systemName: "arrowshape.turn.up.backward.fill"),
+                                  for: .normal)
+        button.imageView?.contentMode = .scaleAspectFill
+        button.tintColor = #colorLiteral(red: 0.1401333511, green: 0.3946738243, blue: 0.563154757, alpha: 1)
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
+        button.frame.size = CGSize(width: 30, height: 30)
+        button.dropShadow(color: .black, offsetX: 0, offsetY: 3, radius: 3)
+        button.addTarget(self, action: #selector(tapBack), for: .touchUpInside)
+        let barButton = UIBarButtonItem(customView: button)
+        return barButton
+    }()
+
+    // MARK: Initializers
+
     init(fetcher: NetworkFetcher) {
         self.fetcher = fetcher
         super.init(nibName: nil, bundle: nil)
         setup()
     }
 
+    @available(*, unavailable)
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Setup Clean Code Design Pattern 
+    // MARK: - Private Methods
 
     private func setup() {
         let viewController = self
-        let interactor = GalleryInteractor()
+        let interactor = GalleryInteractor(fetcher: fetcher)
         let presenter = GalleryPresenter()
         let router = GalleryRouter()
         viewController.interactor = interactor
@@ -50,57 +103,124 @@ class GalleryViewController: UIViewController, GalleryDisplayLogic {
         router.dataStore = interactor
     }
 
-    // MARK: - Routing
+    private func setupNavigationBar() {
+        let appearence = UINavigationBarAppearance()
+        appearence.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        appearence.shadowColor = .black
+        tabBarController?.navigationController?.navigationBar.standardAppearance = appearence
+        tabBarController?.navigationController?.navigationBar.scrollEdgeAppearance = appearence
+        navigationItem.leftBarButtonItem = backNavigationButton
+    }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let scene = segue.identifier {
-            let selector = NSSelectorFromString("routeTo\(scene)WithSegue:")
-            if let router = router, router.responds(to: selector) {
-                router.perform(selector, with: segue)
-            }
+    private func setupNavigationTitle() {
+        let label = UILabel()
+        label.text = "100 Photos on first page"
+        label.font = UIFont(name: "SparkyStones-Regular", size: 24)
+        navigationItem.titleView = label
+    }
+
+    private func setupLayout() {
+        view.addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
+    }
+
+    @objc private func tapBack() {
+        tabBarController?.dismiss(animated: true)
     }
 
     // MARK: - View lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        doSomething()
-        view.backgroundColor = .blue
-//        doSomethingElse()
+        title = "Gallery"
+        view.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        setupLayout()
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: "cell")
+        interactor?.fetchPhotos(page: 1, perpage: 100)
     }
-    
-    //MARK: - receive events from UI
-    
-    //@IBOutlet weak var nameTextField: UITextField!
-//
-//    @IBAction func someButtonTapped(_ sender: Any) {
-//
-//    }
-//
-//    @IBAction func otherButtonTapped(_ sender: Any) {
-//
-//    }
-    
-    // MARK: - request data from GalleryInteractor
 
-    func doSomething() {
-        let request = Gallery.Something.Request()
-        interactor?.doSomething(request: request)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNavigationBar()
+        setupNavigationTitle()
     }
-//
-//    func doSomethingElse() {
-//        let request = Gallery.SomethingElse.Request()
-//        interactor?.doSomethingElse(request: request)
-//    }
+}
 
-    // MARK: - display view model from GalleryPresenter
+// MARK: Extensions
 
-    func displaySomething(viewModel: Gallery.Something.ViewModel) {
-        //nameTextField.text = viewModel.name
+extension GalleryViewController: GalleryDisplayLogic {
+    func display(photos: [Photo]) {
+        DispatchQueue.main.async {
+            self.photos = photos
+        }
     }
-//
-//    func displaySomethingElse(viewModel: Gallery.SomethingElse.ViewModel) {
-//        // do sometingElse with viewModel
-//    }
+
+    func display(errorMessage: String) {
+        DispatchQueue.main.async {
+            self.showAlert("OOPS", errorMessage)
+        }
+    }
+}
+
+extension GalleryViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        photos.count
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as? PhotoCell
+        else {
+            return UICollectionViewCell()
+        }
+        let urlString = photos[indexPath.item].previewUrl
+        cell.setup(with: urlString)
+        cell.backgroundColor = .clear
+        cell.contentView.alpha = 0
+        cell.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+        return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        willDisplay cell: UICollectionViewCell,
+                        forItemAt indexPath: IndexPath) {
+        let columns = Int(collectionView.frame.width / cell.frame.width)
+        let navBarHeight = navigationController?.navigationBar.frame.height
+        // Count how much cells can fit the screen
+        var maxCellsOnScreen: Int {
+            Int(
+                (collectionView.frame.height - (navBarHeight ?? 0)) / cell.contentView.frame.height
+            ) * columns
+        }
+        var delay: Double = 0
+        var isScrollingUp: Bool {
+            collectionView.contentOffset.y < lastContentOffset.y
+        }
+        lastContentOffset = collectionView.contentOffset
+        // If it first appearence, animation goes from let-top to right-bottom
+        if indexPath.row + 1 <= maxCellsOnScreen, !isScrollingUp {
+            delay = sqrt(Double(indexPath.row)) * 0.2
+        } else if indexPath.row % 2 != 0 {
+            // if scrolling up we ignore left to right animation even for first cells
+            delay += 0.2
+        }
+        UIView.animate(withDuration: 0.4, delay: delay) {
+            cell.contentView.alpha = 1
+            cell.transform = CGAffineTransform.identity
+        }
+    }
+}
+
+// MARK: Preview
+
+struct GalleryView_Previews: PreviewProvider {
+    static var previews: some View {
+        GalleryViewController(fetcher: NetworkFetcher(networkService: NetworkService()))
+            .makePreview()
+    }
 }

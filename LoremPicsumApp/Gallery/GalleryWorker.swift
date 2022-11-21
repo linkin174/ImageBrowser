@@ -14,7 +14,7 @@ import UIKit
 
 class GalleryWorker {
     func doSomeWork() {
-        
+
     }
 //    
 //    func doSomeOtherWork() {

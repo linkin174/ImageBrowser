@@ -15,19 +15,18 @@
 		702E489F292158B3005C6C82 /* NeedleFoundation.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 702E489D292158B3005C6C82 /* NeedleFoundation.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		702E48A229215A17005C6C82 /* SnapKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 702E48A129215A16005C6C82 /* SnapKit.xcframework */; };
 		702E48A329215A17005C6C82 /* SnapKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 702E48A129215A16005C6C82 /* SnapKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		704D6E0E292AAFBE00ACE040 /* SparkyStones.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 704D6E0D292AAFBE00ACE040 /* SparkyStones.ttf */; };
 		70EF677A29216A37006696C2 /* RootComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF677929216A37006696C2 /* RootComponent.swift */; };
 		70EF677F29216AC2006696C2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF677E29216AC2006696C2 /* NetworkService.swift */; };
 		70EF678129216B59006696C2 /* NetworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF678029216B59006696C2 /* NetworkFetcher.swift */; };
 		70EF678629217883006696C2 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF678529217883006696C2 /* API.swift */; };
 		70EF678829218806006696C2 /* NeedleGenerated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF678729218806006696C2 /* NeedleGenerated.swift */; };
 		70EF679929218B42006696C2 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679329218B42006696C2 /* MainPresenter.swift */; };
-		70EF679A29218B42006696C2 /* MainWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679429218B42006696C2 /* MainWorker.swift */; };
 		70EF679B29218B42006696C2 /* MainRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679529218B42006696C2 /* MainRouter.swift */; };
 		70EF679C29218B42006696C2 /* MainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679629218B42006696C2 /* MainModels.swift */; };
 		70EF679D29218B42006696C2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679729218B42006696C2 /* MainViewController.swift */; };
 		70EF679E29218B42006696C2 /* MainInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679829218B42006696C2 /* MainInteractor.swift */; };
 		70EF67A629218BA3006696C2 /* RandomImagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A029218BA3006696C2 /* RandomImagePresenter.swift */; };
-		70EF67A729218BA3006696C2 /* RandomImageWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A129218BA3006696C2 /* RandomImageWorker.swift */; };
 		70EF67A829218BA3006696C2 /* RandomImageRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A229218BA3006696C2 /* RandomImageRouter.swift */; };
 		70EF67A929218BA3006696C2 /* RandomImageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A329218BA3006696C2 /* RandomImageModels.swift */; };
 		70EF67AA29218BA3006696C2 /* RandomImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A429218BA3006696C2 /* RandomImageViewController.swift */; };
@@ -45,6 +44,9 @@
 		70EF67C529250391006696C2 /* UIView + Animation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67C429250391006696C2 /* UIView + Animation.swift */; };
 		70EF67C729253B25006696C2 /* UIView + onTapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67C629253B25006696C2 /* UIView + onTapGesture.swift */; };
 		70EF67C92926AEAC006696C2 /* UIView + dropShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67C82926AEAC006696C2 /* UIView + dropShadow.swift */; };
+		70EF67CE2929009E006696C2 /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67CD2929009E006696C2 /* PhotoCell.swift */; };
+		70EF67D129290120006696C2 /* WebImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67D029290120006696C2 /* WebImageView.swift */; };
+		70EF67D6292948C6006696C2 /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67D5292948C6006696C2 /* Photo.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,19 +73,18 @@
 		702E48932921518F005C6C82 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		702E489D292158B3005C6C82 /* NeedleFoundation.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NeedleFoundation.xcframework; path = Carthage/Build/NeedleFoundation.xcframework; sourceTree = "<group>"; };
 		702E48A129215A16005C6C82 /* SnapKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SnapKit.xcframework; path = Carthage/Build/SnapKit.xcframework; sourceTree = "<group>"; };
+		704D6E0D292AAFBE00ACE040 /* SparkyStones.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SparkyStones.ttf; sourceTree = "<group>"; };
 		70EF677929216A37006696C2 /* RootComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootComponent.swift; sourceTree = "<group>"; };
 		70EF677E29216AC2006696C2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		70EF678029216B59006696C2 /* NetworkFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkFetcher.swift; sourceTree = "<group>"; };
 		70EF678529217883006696C2 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		70EF678729218806006696C2 /* NeedleGenerated.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeedleGenerated.swift; sourceTree = "<group>"; };
 		70EF679329218B42006696C2 /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
-		70EF679429218B42006696C2 /* MainWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWorker.swift; sourceTree = "<group>"; };
 		70EF679529218B42006696C2 /* MainRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRouter.swift; sourceTree = "<group>"; };
 		70EF679629218B42006696C2 /* MainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModels.swift; sourceTree = "<group>"; };
 		70EF679729218B42006696C2 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		70EF679829218B42006696C2 /* MainInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainInteractor.swift; sourceTree = "<group>"; };
 		70EF67A029218BA3006696C2 /* RandomImagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImagePresenter.swift; sourceTree = "<group>"; };
-		70EF67A129218BA3006696C2 /* RandomImageWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageWorker.swift; sourceTree = "<group>"; };
 		70EF67A229218BA3006696C2 /* RandomImageRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageRouter.swift; sourceTree = "<group>"; };
 		70EF67A329218BA3006696C2 /* RandomImageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageModels.swift; sourceTree = "<group>"; };
 		70EF67A429218BA3006696C2 /* RandomImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageViewController.swift; sourceTree = "<group>"; };
@@ -101,6 +102,9 @@
 		70EF67C429250391006696C2 /* UIView + Animation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + Animation.swift"; sourceTree = "<group>"; };
 		70EF67C629253B25006696C2 /* UIView + onTapGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + onTapGesture.swift"; sourceTree = "<group>"; };
 		70EF67C82926AEAC006696C2 /* UIView + dropShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + dropShadow.swift"; sourceTree = "<group>"; };
+		70EF67CD2929009E006696C2 /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
+		70EF67D029290120006696C2 /* WebImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebImageView.swift; sourceTree = "<group>"; };
+		70EF67D5292948C6006696C2 /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,8 +140,9 @@
 		702E48842921518D005C6C82 /* LoremPicsumApp */ = {
 			isa = PBXGroup;
 			children = (
-				70EF677929216A37006696C2 /* RootComponent.swift */,
-				70EF678729218806006696C2 /* NeedleGenerated.swift */,
+				704D6E0F292B3AE500ACE040 /* NeedleDI */,
+				70EF67D4292948BB006696C2 /* Models */,
+				70EF67CF29290113006696C2 /* Helpers */,
 				70EF678229217278006696C2 /* Main */,
 				70EF679F29218B8C006696C2 /* RandomImage */,
 				70EF67AC29218BAF006696C2 /* Gallery */,
@@ -157,6 +162,23 @@
 				702E489D292158B3005C6C82 /* NeedleFoundation.xcframework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		704D6E0C292AAFB100ACE040 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				704D6E0D292AAFBE00ACE040 /* SparkyStones.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		704D6E0F292B3AE500ACE040 /* NeedleDI */ = {
+			isa = PBXGroup;
+			children = (
+				70EF677929216A37006696C2 /* RootComponent.swift */,
+				70EF678729218806006696C2 /* NeedleGenerated.swift */,
+			);
+			path = NeedleDI;
 			sourceTree = "<group>";
 		};
 		70EF677B29216A54006696C2 /* Services */ = {
@@ -182,6 +204,7 @@
 		70EF677D29216AB3006696C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				704D6E0C292AAFB100ACE040 /* Fonts */,
 				702E488E2921518F005C6C82 /* Assets.xcassets */,
 			);
 			path = Resources;
@@ -191,7 +214,6 @@
 			isa = PBXGroup;
 			children = (
 				70EF679329218B42006696C2 /* MainPresenter.swift */,
-				70EF679429218B42006696C2 /* MainWorker.swift */,
 				70EF679529218B42006696C2 /* MainRouter.swift */,
 				70EF679629218B42006696C2 /* MainModels.swift */,
 				70EF679729218B42006696C2 /* MainViewController.swift */,
@@ -204,7 +226,6 @@
 			isa = PBXGroup;
 			children = (
 				70EF67A029218BA3006696C2 /* RandomImagePresenter.swift */,
-				70EF67A129218BA3006696C2 /* RandomImageWorker.swift */,
 				70EF67A229218BA3006696C2 /* RandomImageRouter.swift */,
 				70EF67A329218BA3006696C2 /* RandomImageModels.swift */,
 				70EF67A429218BA3006696C2 /* RandomImageViewController.swift */,
@@ -217,6 +238,7 @@
 		70EF67AC29218BAF006696C2 /* Gallery */ = {
 			isa = PBXGroup;
 			children = (
+				70EF67CC29290061006696C2 /* PhotoCell */,
 				70EF67AD29218BBA006696C2 /* GalleryPresenter.swift */,
 				70EF67AE29218BBA006696C2 /* GalleryWorker.swift */,
 				70EF67AF29218BBA006696C2 /* GalleryRouter.swift */,
@@ -240,6 +262,30 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		70EF67CC29290061006696C2 /* PhotoCell */ = {
+			isa = PBXGroup;
+			children = (
+				70EF67CD2929009E006696C2 /* PhotoCell.swift */,
+			);
+			path = PhotoCell;
+			sourceTree = "<group>";
+		};
+		70EF67CF29290113006696C2 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				70EF67D029290120006696C2 /* WebImageView.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		70EF67D4292948BB006696C2 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				70EF67D5292948C6006696C2 /* Photo.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -252,6 +298,7 @@
 				702E48802921518D005C6C82 /* Resources */,
 				702E48A0292158B3005C6C82 /* Embed Frameworks */,
 				70EF677629215D1A006696C2 /* Needle */,
+				704D6E10292BEFBB00ACE040 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -302,14 +349,35 @@
 			files = (
 				702E48922921518F005C6C82 /* LaunchScreen.storyboard in Resources */,
 				702E488F2921518F005C6C82 /* Assets.xcassets in Resources */,
+				704D6E0E292AAFBE00ACE040 /* SparkyStones.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		704D6E10292BEFBB00ACE040 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 12;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
 		70EF677629215D1A006696C2 /* Needle */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 12;
 			files = (
 			);
@@ -334,8 +402,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				70EF677A29216A37006696C2 /* RootComponent.swift in Sources */,
+				70EF67D6292948C6006696C2 /* Photo.swift in Sources */,
 				70EF67B629218BBA006696C2 /* GalleryModels.swift in Sources */,
 				70EF67B329218BBA006696C2 /* GalleryPresenter.swift in Sources */,
+				70EF67D129290120006696C2 /* WebImageView.swift in Sources */,
 				70EF678129216B59006696C2 /* NetworkFetcher.swift in Sources */,
 				70EF67BF2923C2FB006696C2 /* GalleryComponent.swift in Sources */,
 				702E48862921518D005C6C82 /* AppDelegate.swift in Sources */,
@@ -344,7 +414,6 @@
 				70EF679929218B42006696C2 /* MainPresenter.swift in Sources */,
 				70EF67B529218BBA006696C2 /* GalleryRouter.swift in Sources */,
 				70EF67C529250391006696C2 /* UIView + Animation.swift in Sources */,
-				70EF679A29218B42006696C2 /* MainWorker.swift in Sources */,
 				70EF67A829218BA3006696C2 /* RandomImageRouter.swift in Sources */,
 				70EF67B429218BBA006696C2 /* GalleryWorker.swift in Sources */,
 				70EF679B29218B42006696C2 /* MainRouter.swift in Sources */,
@@ -354,10 +423,10 @@
 				70EF678629217883006696C2 /* API.swift in Sources */,
 				70EF67C92926AEAC006696C2 /* UIView + dropShadow.swift in Sources */,
 				70EF67BB2922B221006696C2 /* UIViewController + Preview.swift in Sources */,
+				70EF67CE2929009E006696C2 /* PhotoCell.swift in Sources */,
 				70EF679C29218B42006696C2 /* MainModels.swift in Sources */,
 				702E48882921518D005C6C82 /* SceneDelegate.swift in Sources */,
 				70EF67AB29218BA3006696C2 /* RandomImageInteractor.swift in Sources */,
-				70EF67A729218BA3006696C2 /* RandomImageWorker.swift in Sources */,
 				70EF67C32924F967006696C2 /* UIViewController + Alert.swift in Sources */,
 				70EF67A929218BA3006696C2 /* RandomImageModels.swift in Sources */,
 				70EF67B729218BBA006696C2 /* GalleryViewController.swift in Sources */,

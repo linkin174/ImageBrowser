@@ -12,43 +12,16 @@
 
 import UIKit
 
-enum Gallery
-{
-    // MARK: Use cases
-
-    enum Something
-    {
-        struct Request
-        {
-
-        }
-
-        struct Response
-        {
-
-        }
-
-        struct ViewModel
-        {
-
-        }
+enum Gallery {
+    enum Request {
+        case fetchPhotos(page: Int, perPage: Int)
     }
-    
-//    enum SomethingElse
-//    {
-//        struct Request
-//        {
-//
-//        }
-//
-//        struct Response
-//        {
-//
-//        }
-//
-//        struct ViewModel
-//        {
-//
-//        }
-//    }
+    enum Response {
+        case presentPhotos(photos: [Photo])
+        case presentError(error: Error)
+    }
+    enum Display {
+        case displayPhotos(photos: [Photo])
+        case display(error: String)
+    }
 }

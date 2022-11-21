@@ -16,9 +16,13 @@ protocol RandomImagePresentationLogic {
     func present(response: RandomImage.Response)
 }
 
-class RandomImagePresenter: RandomImagePresentationLogic {
+final class RandomImagePresenter: RandomImagePresentationLogic {
+    // MARK: Public Properties
+
     weak var viewController: RandomImageDisplayLogic?
-    
+
+    // MARK: Public Methods
+
     func present(response: RandomImage.Response) {
         switch response {
         case .presentRandomImageFrom(let data):

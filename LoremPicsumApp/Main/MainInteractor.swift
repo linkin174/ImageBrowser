@@ -16,12 +16,25 @@ protocol MainBusinessLogic {
     func makeRequest(request: Main.Request)
 }
 
-protocol MainDataStore {
-    
-}
+protocol MainDataStore {}
 
-class MainInteractor: MainBusinessLogic, MainDataStore {
-    
+final class MainInteractor: MainBusinessLogic, MainDataStore {
+    // MARK: Public properties
+
+    var presenter: MainPresentationLogic?
+
+    // MARK: Private properties
+
+    private let fetcher: NetworkFetcher
+
+    // MARK: Initializers
+
+    init(fetcher: NetworkFetcher) {
+        self.fetcher = fetcher
+    }
+
+    // MARK: Public methods
+
     func makeRequest(request: Main.Request) {
         switch request {
         case .loadBackgroundImage:
@@ -29,21 +42,10 @@ class MainInteractor: MainBusinessLogic, MainDataStore {
                 do {
                     let data = try await fetcher.fetchRandomImage()
                     presenter?.present(response: .presentBackgroundImage(data: data))
-                } catch let error {
+                } catch {
                     presenter?.present(response: .presentError(error: error))
                 }
             }
         }
     }
-    
-    
-    
-    private let fetcher: NetworkFetcher
-    
-    init(fetcher: NetworkFetcher) {
-        self.fetcher = fetcher
-    }
-    
-    var presenter: MainPresentationLogic?
-    var worker: MainWorker?
 }

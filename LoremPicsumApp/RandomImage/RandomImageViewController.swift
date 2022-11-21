@@ -17,16 +17,17 @@ protocol RandomImageDisplayLogic: AnyObject {
     func display(viewModel: RandomImage.ViewModel)
 }
 
-class RandomImageViewController: UIViewController {
-    var interactor: RandomImageBusinessLogic?
-    var router: (NSObjectProtocol & RandomImageRoutingLogic & RandomImageDataPassing)?
-    
-    let fetcher: NetworkFetcher
-    
+final class RandomImageViewController: UIViewController {
+
+    // MARK: Private Properties
+
+    private var interactor: RandomImageBusinessLogic?
+    private var router: (NSObjectProtocol & RandomImageRoutingLogic & RandomImageDataPassing)?
+    private let fetcher: NetworkFetcher
     private var isInterfaceHidden = false
-    
+
     // MARK: Views
-    
+
     private lazy var imageView: UIImageView = {
         let view = UIImageView()
         view.isUserInteractionEnabled = true
@@ -35,17 +36,17 @@ class RandomImageViewController: UIViewController {
         view.onTapGesture(self, #selector(hideInterface))
         return view
     }()
-    
-    private var indicator: UIActivityIndicatorView = {
+
+    private let indicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
         indicator.color = UIColor.white
         indicator.startAnimating()
         indicator.hidesWhenStopped = true
         return indicator
     }()
-    
+
     private lazy var loadButton: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .custom)
         button.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
         button.setImage(UIImage(systemName: "arrow.triangle.2.circlepath"), for: .normal)
         button.setImage(UIImage(), for: .selected)
@@ -59,44 +60,54 @@ class RandomImageViewController: UIViewController {
         button.addTarget(self, action: #selector(loadImage), for: .touchUpInside)
         return button
     }()
-    
+
     private lazy var shareButton: UIButton = {
-        let button = UIButton()
-        button.layer.cornerRadius = 20
+        let button = UIButton(type: .custom)
         button.backgroundColor = UIColor.white
-        button.setImage(UIImage(systemName: "square.and.arrow.up"), for: .normal)
-        button.imageView?.tintColor = .black
-        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 3, right: 0)
+                button.setImage(UIImage(systemName: "square.and.arrow.up")?.withTintColor(.black), for: .normal)
+
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentVerticalAlignment = .fill
+        button.contentHorizontalAlignment = .fill
+        button.imageEdgeInsets = UIEdgeInsets(top: 5, left: 0, bottom: 7, right: 0)
         button.dropShadow(color: .black, offsetX: 0, offsetY: 5)
-        button.addTarget(self, action: #selector(shareImage), for: .touchUpInside)
-        return button
-    }()
-    
-    private lazy var backNavigationButton: UIBarButtonItem = {
-        let customView = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
-        let button = UIBarButtonItem(customView: customView)
-        customView.image = UIImage(systemName: "arrowshape.turn.up.backward.fill")
-        customView.image = customView.image?.resizableImage(withCapInsets: UIEdgeInsets(), resizingMode: .stretch)
-        customView.image = customView.image?.withRenderingMode(.alwaysTemplate)
-        customView.tintColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
-        customView.dropShadow(color: .black, offsetX: 2, offsetY: 3, radius: 3)
-        button.customView?.onTapGesture(self, #selector(goBackToMainView))
+                button.addTarget(self, action: #selector(shareImage), for: .touchUpInside)
+        button.tintColor = .black
         return button
     }()
 
-    // MARK: Object lifecycle
-    
+    private lazy var backButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setBackgroundImage(UIImage(systemName: "arrowshape.turn.up.backward.fill"), for: .normal)
+        button.imageView?.contentMode = .scaleAspectFill
+        button.tintColor  = #colorLiteral(red: 0.1401333511, green: 0.3946738243, blue: 0.563154757, alpha: 1)
+        button.dropShadow(color: .black, offsetX: 0, offsetY: 3, radius: 5)
+        button.addTarget(self, action: #selector(tapBack), for: .touchUpInside)
+        return button
+    }()
+
+    // MARK: Initializers
+
     init(fetcher: NetworkFetcher) {
+        print(#function)
         self.fetcher = fetcher
         super.init(nibName: nil, bundle: nil)
         setup()
     }
-    
+
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
+    // MARK: - View lifecycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupConstraints()
+        loadImage()
+    }
+
     // MARK: Private methods
 
     private func setup() {
@@ -111,34 +122,43 @@ class RandomImageViewController: UIViewController {
         router.viewController = viewController
         router.dataStore = interactor
     }
-    
+
     private func setupConstraints() {
-        self.view.addSubview(imageView)
-        self.view.addSubview(loadButton)
-        self.view.addSubview(shareButton)
+        view.addSubview(imageView)
+        view.addSubview(loadButton)
+        view.addSubview(shareButton)
+        view.addSubview(backButton)
         loadButton.addSubview(indicator)
-        
+
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        
+
         loadButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
             make.bottom.equalToSuperview().inset(40)
             make.width.height.equalTo(60)
+            loadButton.layer.cornerRadius = 30
         }
 
         shareButton.snp.makeConstraints { make in
             make.trailing.equalTo(imageView.snp.trailing).inset(40)
             make.bottom.equalToSuperview().inset(40)
             make.width.height.equalTo(40)
+            shareButton.layer.cornerRadius = 20
         }
 
         indicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
+
+        backButton.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(60)
+            make.width.height.equalTo(30)
+        }
     }
-    
+
     private func animateImageView(with image: UIImage) {
         UIView.transition(with: imageView,
                           duration: 0.7,
@@ -147,45 +167,34 @@ class RandomImageViewController: UIViewController {
         }
     }
 
-    
     @objc private func loadImage() {
         interactor?.makeRequest(request: .loadRandomImage)
         loadButton.isSelected = true
         indicator.startAnimating()
         shareButton.isEnabled = false
     }
-    
+
     @objc private func shareImage() {
         guard let image = imageView.image else { return }
         let shareSheet = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         present(shareSheet, animated: true)
     }
-    
+
     @objc private func hideInterface() {
         if isInterfaceHidden {
             shareButton.animateFade(.fadeIn, 0.5)
             loadButton.animateFade(.fadeIn, 0.5)
-            backNavigationButton.customView?.animateFade(.fadeIn, 0.5)
+            backButton.animateFade(.fadeIn, 0.5)
         } else {
             shareButton.animateFade(.fadeOut, 0.5)
             loadButton.animateFade(.fadeOut, 0.5)
-            backNavigationButton.customView?.animateFade(.fadeOut, 0.5)
+            backButton.animateFade(.fadeOut, 0.5)
         }
         isInterfaceHidden.toggle()
     }
-    
-    @objc private func goBackToMainView() {
-        navigationController?.popViewController(animated: true)
-    }
 
-
-    // MARK: - View lifecycle
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupConstraints()
-        loadImage()
-        navigationItem.leftBarButtonItem = backNavigationButton
+    @objc private func tapBack() {
+        dismiss(animated: true)
     }
 }
 
@@ -193,22 +202,25 @@ extension RandomImageViewController: RandomImageDisplayLogic {
     func display(viewModel: RandomImage.ViewModel) {
         switch viewModel {
         case .displayRandom(let image):
+            self.shareButton.animateFade(.fadeIn, 0.5)
             DispatchQueue.main.async { [unowned self] in
-                self.animateImageView(with: image)
-                self.loadButton.isSelected = false
-                self.indicator.stopAnimating()
-                self.shareButton.animateFade(.fadeIn, 0.5)
                 self.shareButton.isEnabled = true
+                self.indicator.stopAnimating()
+                self.loadButton.isSelected = false
+                self.animateImageView(with: image)
             }
         case .display(let error):
-            showAlert("Error Loading Image", "Something went wrong: \(error). Check your internet connection and try again")
+            showAlert("Error Loading Image", "Something went wrong: \(error). \n"
+                      + "Check your internet connection and try again")
         }
     }
 }
 
+// MARK: Preview
+
 struct RandomImageVC_Previews: PreviewProvider {
     static var previews: some View {
         RandomImageViewController(fetcher: NetworkFetcher(networkService: NetworkService()))
-            .preview()
+            .makePreview()
     }
 }

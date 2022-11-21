@@ -24,13 +24,23 @@ final class FetcherDiComponent: Component<FetcherDependency>, FetcherBuilder {
 }
 
 final class NetworkFetcher {
-    
+
     private let networkService: NetworkingProtocol
-    
+
     init(networkService: NetworkingProtocol) {
         self.networkService = networkService
     }
-    
+
+    /// Fetches a random image data from API
+    ///
+    /// See ``API`` for more information
+    ///
+    /// > Warning: Can throw Error instead of returning Data
+    ///
+    /// - Parameters:
+    ///     - no parameters needed
+    ///
+    /// - Returns: Return image data of random image from API
     func fetchRandomImage() async throws -> Data {
         do {
             return try await networkService.makeRequest(API.randomImage, nil)
@@ -38,7 +48,46 @@ final class NetworkFetcher {
             throw error
         }
     }
-    
+
+    /// Fetch target number of photos on target page, if given
+    ///
+    /// ```
+    /// fetchPhotos(page: 1, limit: nil)
+    /// // return array of 30 photos of first page
+    /// fetchPhotos(page: nil, limit: 100)
+    /// // return 100 photos from first page
+    /// ```
+    ///
+    /// > Warning: Maximum photos per page allowed equals 100.
+    /// > Everything above 100 would be ignored
+    ///
+    /// - Throws: Method can throw ``APIError``
+    ///
+    /// - Parameters:
+    ///     - page: Selected page to load from, default = 1
+    ///     - limit: Limits number of ``Photo`` from selected page, default = 30
+    ///
+    /// - Returns: ``[Photo]``
+    func fetchPhotos(page: Int?, limit: Int?) async throws -> [Photo] {
+
+        var parameters = [String: String]()
+
+        if let page {
+            parameters["page"] = String(page)
+        }
+
+        if let limit {
+            parameters["limit"] = String(limit)
+        }
+        do {
+            let data = try await networkService.makeRequest(API.listPhotos, parameters)
+            let photos = try decode(from: data, to: [Photo].self)
+            return photos
+        } catch let error {
+            throw error
+        }
+    }
+
     private func decode<T: Decodable>(from data: Data, to type: T.Type) throws -> T {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
@@ -46,5 +95,3 @@ final class NetworkFetcher {
         return decoded
     }
 }
-
-

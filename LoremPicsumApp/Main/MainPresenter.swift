@@ -16,7 +16,14 @@ protocol MainPresentationLogic {
     func present(response: Main.Response)
 }
 
-class MainPresenter: MainPresentationLogic {
+final class MainPresenter: MainPresentationLogic {
+
+    // MARK: - Public Properties
+
+    weak var viewController: MainDisplayLogic?
+
+    // MARK: - Public methods
+
     func present(response: Main.Response) {
         switch response {
         case .presentBackgroundImage(let data):
@@ -28,14 +35,4 @@ class MainPresenter: MainPresentationLogic {
             viewController?.display(viewModel: .displayError(text: error.rawValue))
         }
     }
-    
-    weak var viewController: MainDisplayLogic?
-
-    // MARK: Parse and calc respnse from MainInteractor and send simple view model to MainViewController to be displayed
-
-//
-//    func presentSomethingElse(response: Main.SomethingElse.Response) {
-//        let viewModel = Main.SomethingElse.ViewModel()
-//        viewController?.displaySomethingElse(viewModel: viewModel)
-//    }
 }

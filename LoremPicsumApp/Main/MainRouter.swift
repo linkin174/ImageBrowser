@@ -21,8 +21,10 @@ protocol MainDataPassing {
     var dataStore: MainDataStore? { get }
 }
 
-class MainRouter: NSObject, MainRoutingLogic, MainDataPassing {
-    
+final class MainRouter: NSObject, MainRoutingLogic, MainDataPassing {
+
+    // MARK: - Public Properties
+
     weak var viewController: MainViewController?
     var dataStore: MainDataStore?
 
@@ -31,18 +33,27 @@ class MainRouter: NSObject, MainRoutingLogic, MainDataPassing {
     func routeToRandomImageVC() {
         guard let source = viewController else { return }
         guard let destination = source.randomImageBuilder?.randomImageViewController else { return }
-        navigateToSomewhere(source: source, destination: destination)
+        presentSomeVC(source: source, destination: destination)
     }
-    
+
     func routeToGalleryVC() {
         guard let source = viewController else { return }
         guard let destination = source.galleryBuilder?.galleryViewController else { return }
-        navigateToSomewhere(source: source, destination: destination)
+        #warning("Try to move logic of creating TabBar in GalleryVC")
+        let navVC = UINavigationController(rootViewController: destination)
+        let tabVC = UITabBarController()
+        tabVC.setViewControllers([navVC], animated: true)
+        presentSomeVC(source: source, destination: tabVC)
     }
 
     // MARK: Navigation to other screen
 
     private func navigateToSomewhere(source: UIViewController, destination: UIViewController) {
         source.navigationController?.pushViewController(destination, animated: true)
+    }
+
+    private func presentSomeVC(source: UIViewController, destination: UIViewController) {
+        destination.modalPresentationStyle = .fullScreen
+        source.present(destination, animated: true)
     }
 }

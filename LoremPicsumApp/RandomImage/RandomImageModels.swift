@@ -18,12 +18,12 @@ enum RandomImage {
     enum Request {
         case loadRandomImage
     }
-    
+
     enum Response {
         case presentRandomImageFrom(data: Data)
         case presentError(error: Error)
     }
-    
+
     enum ViewModel {
         case displayRandom(image: UIImage)
         case display(error: String)

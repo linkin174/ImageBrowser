@@ -13,21 +13,20 @@
 import UIKit
 
 protocol GalleryPresentationLogic {
-    func presentSomething(response: Gallery.Something.Response)
+    func present(photos: [Photo])
+    func present(error: Error)
 }
 
 class GalleryPresenter: GalleryPresentationLogic {
+    // MARK: - Public Properties
     weak var viewController: GalleryDisplayLogic?
-
-    // MARK: Parse and calc respnse from GalleryInteractor and send simple view model to GalleryViewController to be displayed
-
-    func presentSomething(response: Gallery.Something.Response) {
-        let viewModel = Gallery.Something.ViewModel()
-        viewController?.displaySomething(viewModel: viewModel)
+    // MARK: - Public Methods
+    func present(photos: [Photo]) {
+        viewController?.display(photos: photos)
     }
-//
-//    func presentSomethingElse(response: Gallery.SomethingElse.Response) {
-//        let viewModel = Gallery.SomethingElse.ViewModel()
-//        viewController?.displaySomethingElse(viewModel: viewModel)
-//    }
+    func present(error: Error) {
+        if let error = error as? APIError {
+            viewController?.display(errorMessage: error.rawValue)
+        }
+    }
 }

@@ -17,20 +17,27 @@ protocol RandomImageBusinessLogic {
 }
 
 protocol RandomImageDataStore {
-    //var name: String { get set }
+    // var name: String { get set }
 }
 
 class RandomImageInteractor: RandomImageBusinessLogic, RandomImageDataStore {
-    
+
+    // MARK: Public Properties
+
     var presenter: RandomImagePresentationLogic?
-    var worker: RandomImageWorker?
-    
+
+    // MARK: Private Properties
+
     private let fetcher: NetworkFetcher
-    
+
+    // MARK: Initializers
+
     init(fetcher: NetworkFetcher) {
         self.fetcher = fetcher
     }
-    
+
+    // MARK: Public Methods
+
     func makeRequest(request: RandomImage.Request) {
         switch request {
         case .loadRandomImage:

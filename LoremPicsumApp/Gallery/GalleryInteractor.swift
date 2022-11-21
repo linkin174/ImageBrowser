@@ -13,34 +13,27 @@
 import UIKit
 
 protocol GalleryBusinessLogic {
-    func doSomething(request: Gallery.Something.Request)
-//    func doSomethingElse(request: Gallery.SomethingElse.Request)
+    func fetchPhotos(page: Int?, perpage: Int?)
 }
 
 protocol GalleryDataStore {
-    //var name: String { get set }
 }
 
 class GalleryInteractor: GalleryBusinessLogic, GalleryDataStore {
     var presenter: GalleryPresentationLogic?
     var worker: GalleryWorker?
-    //var name: String = ""
-
-    // MARK: Do something (and send response to GalleryPresenter)
-
-    func doSomething(request: Gallery.Something.Request) {
-        worker = GalleryWorker()
-        worker?.doSomeWork()
-
-        let response = Gallery.Something.Response()
-        presenter?.presentSomething(response: response)
+    private let fetcher: NetworkFetcher
+    init(fetcher: NetworkFetcher) {
+        self.fetcher = fetcher
     }
-//
-//    func doSomethingElse(request: Gallery.SomethingElse.Request) {
-//        worker = GalleryWorker()
-//        worker?.doSomeOtherWork()
-//
-//        let response = Gallery.SomethingElse.Response()
-//        presenter?.presentSomethingElse(response: response)
-//    }
+    func fetchPhotos(page: Int? = nil, perpage: Int? = nil) {
+        Task {
+            do {
+                let photos = try await fetcher.fetchPhotos(page: page, limit: perpage)
+                presenter?.present(photos: photos)
+            } catch let error {
+                presenter?.present(error: error)
+            }
+        }
+    }
 }

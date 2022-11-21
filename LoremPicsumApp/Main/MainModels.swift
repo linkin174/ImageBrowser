@@ -18,13 +18,13 @@ enum Main {
     enum Request {
         case loadBackgroundImage
     }
-    
+
     enum Response {
         case presentBackgroundImage(data: Data)
         case presentError(error: Error)
     }
-    
-    enum ViewModel {
+
+    enum Display {
         case displayBackgroundImage(image: UIImage)
         case displayError(text: String)
     }

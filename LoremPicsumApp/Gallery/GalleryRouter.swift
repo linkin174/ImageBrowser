@@ -13,7 +13,7 @@
 import UIKit
 
 @objc protocol GalleryRoutingLogic {
-    //func routeToSomewhere(segue: UIStoryboardSegue?)
+    // func routeToSomewhere(segue: UIStoryboardSegue?)
 }
 
 protocol GalleryDataPassing {
@@ -26,25 +26,26 @@ class GalleryRouter: NSObject, GalleryRoutingLogic, GalleryDataPassing {
 
 // MARK: Routing (navigating to other screens)
 
-//func routeToSomewhere(segue: UIStoryboardSegue?) {
+// func routeToSomewhere(segue: UIStoryboardSegue?) {
 //    if let segue = segue {
 //        let destinationVC = segue.destination as! SomewhereViewController
 //        var destinationDS = destinationVC.router!.dataStore!
 //        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
 //    } else {
 //        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        let destinationVC = storyboard.instantiateViewController(withIdentifier: "SomewhereViewController") as! SomewhereViewController
+//        let destinationVC = storyboard.instantiateViewController(
+// withIdentifier: "SomewhereViewController") as! SomewhereViewController
 //        var destinationDS = destinationVC.router!.dataStore!
 //        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
 //        navigateToSomewhere(source: viewController!, destination: destinationVC)
 //    }
-//}
+// }
 
 // MARK: Navigation to other screen
 
-//func navigateToSomewhere(source: GalleryViewController, destination: SomewhereViewController) {
+// func navigateToSomewhere(source: GalleryViewController, destination: SomewhereViewController) {
 //    source.show(destination, sender: nil)
-//}
+// }
 
 // MARK: Passing data to other screen
 

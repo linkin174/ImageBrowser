@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIView {
-    func dropShadow(color: UIColor, offsetX: CGFloat, offsetY: CGFloat,  opacity: Float = 0.5,  radius: CGFloat = 5) {
+    func dropShadow(color: UIColor, offsetX: CGFloat, offsetY: CGFloat, opacity: Float = 0.5, radius: CGFloat = 5) {
         self.layer.shadowColor = color.cgColor
         self.layer.shadowOffset = CGSize(width: offsetX, height: offsetY)
         self.layer.shadowOpacity = opacity
