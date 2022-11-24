@@ -10,6 +10,6 @@ import UIKit
 extension UIView {
     func onTapGesture(_ target: Any?, _ action: Selector) {
         let recognizer = UITapGestureRecognizer(target: target, action: action)
-        self.addGestureRecognizer(recognizer)
+        addGestureRecognizer(recognizer)
     }
 }

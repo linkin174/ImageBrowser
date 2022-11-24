@@ -28,7 +28,7 @@ final class MainViewController: UIViewController {
 
     private var interactor: MainBusinessLogic?
     private var router: (NSObjectProtocol & MainRoutingLogic & MainDataPassing)?
-    private let fetcher: NetworkFetcher
+    private let fetcher: FetchingProtocol
 
     // MARK: Views
 
@@ -85,7 +85,7 @@ final class MainViewController: UIViewController {
 
     // MARK: Initializers
 
-    init(fetcher: NetworkFetcher, randomImageBuilder: RandomImageBuilder?, galleryBuilder: GalleryBuilder?) {
+    init(fetcher: FetchingProtocol, randomImageBuilder: RandomImageBuilder?, galleryBuilder: GalleryBuilder?) {
         self.fetcher = fetcher
         self.randomImageBuilder = randomImageBuilder
         self.galleryBuilder = galleryBuilder

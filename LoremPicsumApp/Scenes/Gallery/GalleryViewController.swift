@@ -27,7 +27,7 @@ class GalleryViewController: UIViewController {
 
     var interactor: GalleryBusinessLogic?
     var router: (NSObjectProtocol & GalleryRoutingLogic & GalleryDataPassing)?
-    let fetcher: NetworkFetcher
+    let fetcher: FetchingProtocol
 
     // MARK: Private properties
 
@@ -77,7 +77,7 @@ class GalleryViewController: UIViewController {
 
     // MARK: Initializers
 
-    init(fetcher: NetworkFetcher) {
+    init(fetcher: FetchingProtocol) {
         self.fetcher = fetcher
         super.init(nibName: nil, bundle: nil)
         setup()
@@ -134,7 +134,6 @@ class GalleryViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Gallery"
         view.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         setupLayout()
         collectionView.delegate = self

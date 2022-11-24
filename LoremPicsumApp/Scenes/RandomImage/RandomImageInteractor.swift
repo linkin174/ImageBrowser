@@ -10,6 +10,7 @@
 //  see http://clean-swift.com
 //
 
+import Combine
 import UIKit
 
 protocol RandomImageBusinessLogic {
@@ -21,18 +22,18 @@ protocol RandomImageDataStore {
 }
 
 class RandomImageInteractor: RandomImageBusinessLogic, RandomImageDataStore {
-
     // MARK: Public Properties
 
     var presenter: RandomImagePresentationLogic?
 
     // MARK: Private Properties
 
-    private let fetcher: NetworkFetcher
+    private let fetcher: FetchingProtocol
+    private var observer: AnyCancellable?
 
     // MARK: Initializers
 
-    init(fetcher: NetworkFetcher) {
+    init(fetcher: FetchingProtocol) {
         self.fetcher = fetcher
     }
 
@@ -41,14 +42,22 @@ class RandomImageInteractor: RandomImageBusinessLogic, RandomImageDataStore {
     func makeRequest(request: RandomImage.Request) {
         switch request {
         case .loadRandomImage:
-            Task {
-                do {
-                    let data = try await fetcher.fetchRandomImage()
-                    presenter?.present(response: .presentRandomImageFrom(data: data))
-                } catch let error {
-                    presenter?.present(response: .presentError(error: error))
+            fetcher.fetchRandomImageData { result in
+                switch result {
+                case .success(let success):
+                    self.presenter?.present(response: .presentRandomImageFrom(data: success))
+                case .failure(let failure):
+                    self.presenter?.present(response: .presentError(error: failure))
                 }
             }
+//            Task {
+//                do {
+//                    let data = try await fetcher.fetchRandomImage()
+//                    presenter?.present(response: .presentRandomImageFrom(data: data))
+//                } catch let error {
+//                    presenter?.present(response: .presentError(error: error))
+//                }
+//            }
         }
     }
 }

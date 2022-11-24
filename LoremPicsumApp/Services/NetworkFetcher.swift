@@ -8,6 +8,7 @@
 import Foundation
 import NeedleFoundation
 import UIKit.UIImage
+import Combine
 
 protocol FetcherDependency: Dependency {
     var networkService: NetworkingProtocol { get }
@@ -23,7 +24,17 @@ final class FetcherDiComponent: Component<FetcherDependency>, FetcherBuilder {
     }
 }
 
-final class NetworkFetcher {
+protocol FetchingProtocol {
+    func fetchRandomImage() async throws -> Data
+    func fetchPhotos(page: Int?, limit: Int?) async throws -> [Photo]
+    func fetchRandomImageData(completion: @escaping (Result<Data, Error>) -> Void)
+}
+
+final class NetworkFetcher: FetchingProtocol {
+
+    private var cancellables = Set<AnyCancellable>()
+
+    private var observer: AnyCancellable?
 
     private let networkService: NetworkingProtocol
 
@@ -43,6 +54,10 @@ final class NetworkFetcher {
     /// - Returns: Return image data of random image from API
     func fetchRandomImage() async throws -> Data {
         do {
+            #warning("test")
+            networkService.makeRequestWithCompletion(API.randomImage, nil) { result in
+                print(result)
+            }
             return try await networkService.makeRequest(API.randomImage, nil)
         } catch let error {
             throw error
@@ -69,13 +84,10 @@ final class NetworkFetcher {
     ///
     /// - Returns: ``[Photo]``
     func fetchPhotos(page: Int?, limit: Int?) async throws -> [Photo] {
-
         var parameters = [String: String]()
-
         if let page {
             parameters["page"] = String(page)
         }
-
         if let limit {
             parameters["limit"] = String(limit)
         }
@@ -86,6 +98,10 @@ final class NetworkFetcher {
         } catch let error {
             throw error
         }
+    }
+
+    func fetchRandomImageData(completion: @escaping (Result<Data, Error>) -> Void) {
+        networkService.makeRequestWithCompletion(API.randomImage, nil, completion: completion)
     }
 
     private func decode<T: Decodable>(from data: Data, to type: T.Type) throws -> T {

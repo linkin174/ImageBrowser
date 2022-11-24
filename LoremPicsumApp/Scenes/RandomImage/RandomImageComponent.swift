@@ -9,7 +9,8 @@ import UIKit
 import NeedleFoundation
 
 protocol RandomImageDependency: Dependency {
-    var fetcher: NetworkFetcher { get }
+    var fetcher: FetchingProtocol { get }
+    var networkService: NetworkingProtocol { get }
 }
 
 protocol RandomImageBuilder {
@@ -18,6 +19,7 @@ protocol RandomImageBuilder {
 
 final class RandomImageComponent: Component<RandomImageDependency>, RandomImageBuilder {
     var randomImageViewController: UIViewController {
-        RandomImageViewController(fetcher: dependency.fetcher)
+        RandomImageViewController(fetcher: dependency.fetcher,
+                                  progressPublisher: dependency.networkService.progressPublisher)
     }
 }

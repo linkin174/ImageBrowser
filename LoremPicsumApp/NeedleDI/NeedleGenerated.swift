@@ -19,7 +19,8 @@ private func parent1(_ component: NeedleFoundation.Scope) -> NeedleFoundation.Sc
 #if !NEEDLE_DYNAMIC
 
 private class GalleryDependency4eca8b5a4c53a00eece8Provider: GalleryDependency {
-    var fetcher: NetworkFetcher {
+
+    var fetcher: FetchingProtocol {
         return rootComponent.fetcher
     }
     private let rootComponent: RootComponent
@@ -45,9 +46,16 @@ private func factoryf43f98bf6b497695416cb3a8f24c1d289f2c0f2e(_ component: Needle
     return FetcherDependency7023f5d007e2c27fedcfProvider(rootComponent: parent1(component) as! RootComponent)
 }
 private class RandomImageDependencyaccc2131f0b3c23c4112Provider: RandomImageDependency {
-    var fetcher: NetworkFetcher {
+
+    var networkService: NetworkingProtocol {
+        rootComponent.networkService
+    }
+
+    
+    var fetcher: FetchingProtocol {
         return rootComponent.fetcher
     }
+
     private let rootComponent: RootComponent
     init(rootComponent: RootComponent) {
         self.rootComponent = rootComponent

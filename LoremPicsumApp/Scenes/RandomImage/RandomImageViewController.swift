@@ -10,6 +10,7 @@
 //  see http://clean-swift.com
 //
 
+import Combine
 import SnapKit
 import SwiftUI
 
@@ -18,23 +19,35 @@ protocol RandomImageDisplayLogic: AnyObject {
 }
 
 final class RandomImageViewController: UIViewController {
-
     // MARK: Private Properties
 
     private var interactor: RandomImageBusinessLogic?
     private var router: (NSObjectProtocol & RandomImageRoutingLogic & RandomImageDataPassing)?
-    private let fetcher: NetworkFetcher
+    private let fetcher: FetchingProtocol
     private var isInterfaceHidden = false
+    private let progressPublisher: Published<Double>.Publisher?
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: Views
 
     private lazy var imageView: UIImageView = {
-        let view = UIImageView()
+        let view = UIImageView(frame: self.view.bounds)
         view.isUserInteractionEnabled = true
+        view.clipsToBounds = true
         view.image = UIImage(named: "dummy")
         view.contentMode = .scaleAspectFill
         view.onTapGesture(self, #selector(hideInterface))
         return view
+    }()
+    #warning("Refactor code, try to remove layer logic from here. Make Struct to hold all of the settings")
+    private lazy var loadingIndicatorLayer: CAShapeLayer = {
+        let layer = CAShapeLayer()
+        layer.lineCap = .round
+        layer.strokeColor = UIColor.green.cgColor
+        layer.fillColor = UIColor.clear.cgColor
+        layer.lineWidth = 5
+        layer.strokeEnd = 0
+        return layer
     }()
 
     private let indicator: UIActivityIndicatorView = {
@@ -47,6 +60,7 @@ final class RandomImageViewController: UIViewController {
 
     private lazy var loadButton: UIButton = {
         let button = UIButton(type: .custom)
+        button.clipsToBounds = true
         button.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
         button.setImage(UIImage(systemName: "arrow.triangle.2.circlepath"), for: .normal)
         button.setImage(UIImage(), for: .selected)
@@ -56,22 +70,21 @@ final class RandomImageViewController: UIViewController {
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         button.layer.cornerRadius = 30
-        button.dropShadow(color: .black, offsetX: 0, offsetY: 5)
         button.addTarget(self, action: #selector(loadImage), for: .touchUpInside)
+        button.dropShadow(color: .black, offsetX: 0, offsetY: 5)
         return button
     }()
 
     private lazy var shareButton: UIButton = {
         let button = UIButton(type: .custom)
         button.backgroundColor = UIColor.white
-                button.setImage(UIImage(systemName: "square.and.arrow.up")?.withTintColor(.black), for: .normal)
-
+        button.setImage(UIImage(systemName: "square.and.arrow.up")?.withTintColor(.black), for: .normal)
         button.imageView?.contentMode = .scaleAspectFit
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
         button.imageEdgeInsets = UIEdgeInsets(top: 5, left: 0, bottom: 7, right: 0)
         button.dropShadow(color: .black, offsetX: 0, offsetY: 5)
-                button.addTarget(self, action: #selector(shareImage), for: .touchUpInside)
+        button.addTarget(self, action: #selector(shareImage), for: .touchUpInside)
         button.tintColor = .black
         return button
     }()
@@ -80,7 +93,7 @@ final class RandomImageViewController: UIViewController {
         let button = UIButton(type: .custom)
         button.setBackgroundImage(UIImage(systemName: "arrowshape.turn.up.backward.fill"), for: .normal)
         button.imageView?.contentMode = .scaleAspectFill
-        button.tintColor  = #colorLiteral(red: 0.1401333511, green: 0.3946738243, blue: 0.563154757, alpha: 1)
+        button.tintColor = #colorLiteral(red: 0.1401333511, green: 0.3946738243, blue: 0.563154757, alpha: 1)
         button.dropShadow(color: .black, offsetX: 0, offsetY: 3, radius: 5)
         button.addTarget(self, action: #selector(tapBack), for: .touchUpInside)
         return button
@@ -88,9 +101,9 @@ final class RandomImageViewController: UIViewController {
 
     // MARK: Initializers
 
-    init(fetcher: NetworkFetcher) {
-        print(#function)
+    init(fetcher: FetchingProtocol, progressPublisher: Published<Double>.Publisher?) {
         self.fetcher = fetcher
+        self.progressPublisher = progressPublisher
         super.init(nibName: nil, bundle: nil)
         setup()
     }
@@ -106,6 +119,20 @@ final class RandomImageViewController: UIViewController {
         super.viewDidLoad()
         setupConstraints()
         loadImage()
+        progressPublisher?
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("subscribed")
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { progress in
+                DispatchQueue.main.async {
+                    self.animateProgress(currentProgress: progress)
+                }
+            }
+            .store(in: &cancellables)
     }
 
     // MARK: Private methods
@@ -129,10 +156,6 @@ final class RandomImageViewController: UIViewController {
         view.addSubview(shareButton)
         view.addSubview(backButton)
         loadButton.addSubview(indicator)
-
-        imageView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
 
         loadButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -163,11 +186,30 @@ final class RandomImageViewController: UIViewController {
         UIView.transition(with: imageView,
                           duration: 0.7,
                           options: .transitionCrossDissolve) {
-            self.imageView.image = image
+            DispatchQueue.main.async {
+                self.imageView.image = image
+            }
         }
     }
 
+    private func animateProgress(currentProgress: Double) {
+        let path = UIBezierPath(arcCenter: loadButton.center,
+                                radius: loadButton.frame.width / 2,
+                                startAngle: -CGFloat.pi * 0.5,
+                                endAngle: CGFloat.pi * 1.5,
+                                clockwise: true)
+        loadingIndicatorLayer.path = path.cgPath
+        imageView.layer.addSublayer(loadingIndicatorLayer)
+        let animation = CABasicAnimation(keyPath: "strokeEnd")
+        animation.fromValue = 0
+        animation.toValue = currentProgress
+        animation.duration = 0.4
+        animation.fillMode = .forwards
+        loadingIndicatorLayer.add(animation, forKey: "loading")
+    }
+
     @objc private func loadImage() {
+        animateProgress(currentProgress: 0)
         interactor?.makeRequest(request: .loadRandomImage)
         loadButton.isSelected = true
         indicator.startAnimating()
@@ -198,12 +240,12 @@ final class RandomImageViewController: UIViewController {
     }
 }
 
+// MARK: Extensions
+
 extension RandomImageViewController: RandomImageDisplayLogic {
     func display(viewModel: RandomImage.ViewModel) {
         switch viewModel {
-        case .displayRandom(let image):
-            self.shareButton.animateFade(.fadeIn, 0.5)
-            DispatchQueue.main.async { [unowned self] in
+        case .displayRandom(let image): DispatchQueue.main.async { [unowned self] in
                 self.shareButton.isEnabled = true
                 self.indicator.stopAnimating()
                 self.loadButton.isSelected = false
@@ -211,7 +253,7 @@ extension RandomImageViewController: RandomImageDisplayLogic {
             }
         case .display(let error):
             showAlert("Error Loading Image", "Something went wrong: \(error). \n"
-                      + "Check your internet connection and try again")
+                + "Check your internet connection and try again")
         }
     }
 }
@@ -220,7 +262,7 @@ extension RandomImageViewController: RandomImageDisplayLogic {
 
 struct RandomImageVC_Previews: PreviewProvider {
     static var previews: some View {
-        RandomImageViewController(fetcher: NetworkFetcher(networkService: NetworkService()))
+        RandomImageViewController(fetcher: NetworkFetcher(networkService: NetworkService()), progressPublisher: nil)
             .makePreview()
     }
 }

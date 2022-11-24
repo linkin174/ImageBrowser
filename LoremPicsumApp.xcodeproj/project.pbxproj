@@ -16,6 +16,13 @@
 		702E48A229215A17005C6C82 /* SnapKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 702E48A129215A16005C6C82 /* SnapKit.xcframework */; };
 		702E48A329215A17005C6C82 /* SnapKit.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 702E48A129215A16005C6C82 /* SnapKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		704D6E0E292AAFBE00ACE040 /* SparkyStones.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 704D6E0D292AAFBE00ACE040 /* SparkyStones.ttf */; };
+		704D6E18292C158400ACE040 /* FavoritesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E12292C158400ACE040 /* FavoritesPresenter.swift */; };
+		704D6E19292C158400ACE040 /* FavoritesWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E13292C158400ACE040 /* FavoritesWorker.swift */; };
+		704D6E1A292C158400ACE040 /* FavoritesRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E14292C158400ACE040 /* FavoritesRouter.swift */; };
+		704D6E1B292C158400ACE040 /* FavoritesModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E15292C158400ACE040 /* FavoritesModels.swift */; };
+		704D6E1C292C158400ACE040 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E16292C158400ACE040 /* FavoritesViewController.swift */; };
+		704D6E1D292C158400ACE040 /* FavoritesInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E17292C158400ACE040 /* FavoritesInteractor.swift */; };
+		704D6E21292C15C800ACE040 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E20292C15C800ACE040 /* AboutViewController.swift */; };
 		70EF677A29216A37006696C2 /* RootComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF677929216A37006696C2 /* RootComponent.swift */; };
 		70EF677F29216AC2006696C2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF677E29216AC2006696C2 /* NetworkService.swift */; };
 		70EF678129216B59006696C2 /* NetworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF678029216B59006696C2 /* NetworkFetcher.swift */; };
@@ -74,6 +81,13 @@
 		702E489D292158B3005C6C82 /* NeedleFoundation.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NeedleFoundation.xcframework; path = Carthage/Build/NeedleFoundation.xcframework; sourceTree = "<group>"; };
 		702E48A129215A16005C6C82 /* SnapKit.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = SnapKit.xcframework; path = Carthage/Build/SnapKit.xcframework; sourceTree = "<group>"; };
 		704D6E0D292AAFBE00ACE040 /* SparkyStones.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SparkyStones.ttf; sourceTree = "<group>"; };
+		704D6E12292C158400ACE040 /* FavoritesPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPresenter.swift; sourceTree = "<group>"; };
+		704D6E13292C158400ACE040 /* FavoritesWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesWorker.swift; sourceTree = "<group>"; };
+		704D6E14292C158400ACE040 /* FavoritesRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesRouter.swift; sourceTree = "<group>"; };
+		704D6E15292C158400ACE040 /* FavoritesModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesModels.swift; sourceTree = "<group>"; };
+		704D6E16292C158400ACE040 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
+		704D6E17292C158400ACE040 /* FavoritesInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesInteractor.swift; sourceTree = "<group>"; };
+		704D6E20292C15C800ACE040 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		70EF677929216A37006696C2 /* RootComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootComponent.swift; sourceTree = "<group>"; };
 		70EF677E29216AC2006696C2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		70EF678029216B59006696C2 /* NetworkFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkFetcher.swift; sourceTree = "<group>"; };
@@ -143,9 +157,7 @@
 				704D6E0F292B3AE500ACE040 /* NeedleDI */,
 				70EF67D4292948BB006696C2 /* Models */,
 				70EF67CF29290113006696C2 /* Helpers */,
-				70EF678229217278006696C2 /* Main */,
-				70EF679F29218B8C006696C2 /* RandomImage */,
-				70EF67AC29218BAF006696C2 /* Gallery */,
+				704D6E1F292C15B200ACE040 /* Scenes */,
 				70EF677B29216A54006696C2 /* Services */,
 				70EF67B92922B208006696C2 /* Extensions */,
 				70EF677C29216A60006696C2 /* App */,
@@ -179,6 +191,39 @@
 				70EF678729218806006696C2 /* NeedleGenerated.swift */,
 			);
 			path = NeedleDI;
+			sourceTree = "<group>";
+		};
+		704D6E11292C156A00ACE040 /* Favorites */ = {
+			isa = PBXGroup;
+			children = (
+				704D6E12292C158400ACE040 /* FavoritesPresenter.swift */,
+				704D6E13292C158400ACE040 /* FavoritesWorker.swift */,
+				704D6E14292C158400ACE040 /* FavoritesRouter.swift */,
+				704D6E15292C158400ACE040 /* FavoritesModels.swift */,
+				704D6E16292C158400ACE040 /* FavoritesViewController.swift */,
+				704D6E17292C158400ACE040 /* FavoritesInteractor.swift */,
+			);
+			path = Favorites;
+			sourceTree = "<group>";
+		};
+		704D6E1E292C159F00ACE040 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				704D6E20292C15C800ACE040 /* AboutViewController.swift */,
+			);
+			path = About;
+			sourceTree = "<group>";
+		};
+		704D6E1F292C15B200ACE040 /* Scenes */ = {
+			isa = PBXGroup;
+			children = (
+				70EF678229217278006696C2 /* Main */,
+				70EF679F29218B8C006696C2 /* RandomImage */,
+				70EF67AC29218BAF006696C2 /* Gallery */,
+				704D6E11292C156A00ACE040 /* Favorites */,
+				704D6E1E292C159F00ACE040 /* About */,
+			);
+			path = Scenes;
 			sourceTree = "<group>";
 		};
 		70EF677B29216A54006696C2 /* Services */ = {
@@ -377,8 +422,7 @@
 		};
 		70EF677629215D1A006696C2 /* Needle */ = {
 			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 12;
+			buildActionMask = 8;
 			files = (
 			);
 			inputFileListPaths = (
@@ -390,7 +434,7 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 			shellPath = /bin/sh;
 			shellScript = "export SOURCEKIT_LOGGING=0 && $SRCROOT/Carthage/Checkouts/needle/Generator/bin/needle generate $SRCROOT/$TARGETNAME/NeedleGenerated.swift $SRCROOT/$TARGETNAME\n";
 		};
@@ -401,13 +445,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				704D6E1A292C158400ACE040 /* FavoritesRouter.swift in Sources */,
+				704D6E19292C158400ACE040 /* FavoritesWorker.swift in Sources */,
 				70EF677A29216A37006696C2 /* RootComponent.swift in Sources */,
 				70EF67D6292948C6006696C2 /* Photo.swift in Sources */,
 				70EF67B629218BBA006696C2 /* GalleryModels.swift in Sources */,
 				70EF67B329218BBA006696C2 /* GalleryPresenter.swift in Sources */,
+				704D6E1B292C158400ACE040 /* FavoritesModels.swift in Sources */,
 				70EF67D129290120006696C2 /* WebImageView.swift in Sources */,
 				70EF678129216B59006696C2 /* NetworkFetcher.swift in Sources */,
+				704D6E1D292C158400ACE040 /* FavoritesInteractor.swift in Sources */,
 				70EF67BF2923C2FB006696C2 /* GalleryComponent.swift in Sources */,
+				704D6E1C292C158400ACE040 /* FavoritesViewController.swift in Sources */,
 				702E48862921518D005C6C82 /* AppDelegate.swift in Sources */,
 				70EF67A629218BA3006696C2 /* RandomImagePresenter.swift in Sources */,
 				70EF679D29218B42006696C2 /* MainViewController.swift in Sources */,
@@ -419,6 +468,7 @@
 				70EF679B29218B42006696C2 /* MainRouter.swift in Sources */,
 				70EF67BD2923BB35006696C2 /* RandomImageComponent.swift in Sources */,
 				70EF677F29216AC2006696C2 /* NetworkService.swift in Sources */,
+				704D6E18292C158400ACE040 /* FavoritesPresenter.swift in Sources */,
 				70EF678829218806006696C2 /* NeedleGenerated.swift in Sources */,
 				70EF678629217883006696C2 /* API.swift in Sources */,
 				70EF67C92926AEAC006696C2 /* UIView + dropShadow.swift in Sources */,
@@ -433,6 +483,7 @@
 				70EF67C729253B25006696C2 /* UIView + onTapGesture.swift in Sources */,
 				70EF67B829218BBA006696C2 /* GalleryInteractor.swift in Sources */,
 				70EF679E29218B42006696C2 /* MainInteractor.swift in Sources */,
+				704D6E21292C15C800ACE040 /* AboutViewController.swift in Sources */,
 				70EF67AA29218BA3006696C2 /* RandomImageViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -572,7 +623,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5PJR9F93X8;
+				DEVELOPMENT_TEAM = BS64CSG2MY;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LoremPicsumApp/App/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
@@ -603,7 +654,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 5PJR9F93X8;
+				DEVELOPMENT_TEAM = BS64CSG2MY;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = LoremPicsumApp/App/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";

@@ -25,11 +25,11 @@ final class MainInteractor: MainBusinessLogic, MainDataStore {
 
     // MARK: Private properties
 
-    private let fetcher: NetworkFetcher
+    private let fetcher: FetchingProtocol
 
     // MARK: Initializers
 
-    init(fetcher: NetworkFetcher) {
+    init(fetcher: FetchingProtocol) {
         self.fetcher = fetcher
     }
 

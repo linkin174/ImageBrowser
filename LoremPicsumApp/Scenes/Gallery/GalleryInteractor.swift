@@ -20,10 +20,13 @@ protocol GalleryDataStore {
 }
 
 class GalleryInteractor: GalleryBusinessLogic, GalleryDataStore {
+
     var presenter: GalleryPresentationLogic?
     var worker: GalleryWorker?
-    private let fetcher: NetworkFetcher
-    init(fetcher: NetworkFetcher) {
+
+    private let fetcher: FetchingProtocol
+
+    init(fetcher: FetchingProtocol) {
         self.fetcher = fetcher
     }
     func fetchPhotos(page: Int? = nil, perpage: Int? = nil) {

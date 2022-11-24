@@ -37,12 +37,24 @@ final class MainRouter: NSObject, MainRoutingLogic, MainDataPassing {
     }
 
     func routeToGalleryVC() {
+        let tabItemsRepresentations: [(title: String, image: String)] = [
+            (title: "Gallery", image: "photo.fill.on.rectangle.fill"),
+            (title: "Favorites", image: "heart.fill"),
+            (title: "About", image: "questionmark.circle.fill")
+        ]
         guard let source = viewController else { return }
         guard let destination = source.galleryBuilder?.galleryViewController else { return }
         #warning("Try to move logic of creating TabBar in GalleryVC")
-        let navVC = UINavigationController(rootViewController: destination)
         let tabVC = UITabBarController()
-        tabVC.setViewControllers([navVC], animated: true)
+        let galleryVC = UINavigationController(rootViewController: destination)
+        let favoritesVC = UINavigationController(rootViewController: FavoritesViewController())
+        let aboutVC = AboutViewController()
+        tabVC.setViewControllers([galleryVC, favoritesVC, aboutVC], animated: true)
+        guard let items = tabVC.tabBar.items else { return }
+        for index in 0..<items.count {
+            items[index].title = tabItemsRepresentations[index].title
+            items[index].image = UIImage(systemName: tabItemsRepresentations[index].image)
+        }
         presentSomeVC(source: source, destination: tabVC)
     }
 

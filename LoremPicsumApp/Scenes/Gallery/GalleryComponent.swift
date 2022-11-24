@@ -9,7 +9,7 @@ import UIKit
 import NeedleFoundation
 
 protocol GalleryDependency: Dependency {
-    var fetcher: NetworkFetcher { get }
+    var fetcher: FetchingProtocol { get }
 }
 
 protocol GalleryBuilder {
