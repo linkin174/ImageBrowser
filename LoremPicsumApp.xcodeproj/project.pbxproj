@@ -34,7 +34,6 @@
 		70EF679D29218B42006696C2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679729218B42006696C2 /* MainViewController.swift */; };
 		70EF679E29218B42006696C2 /* MainInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679829218B42006696C2 /* MainInteractor.swift */; };
 		70EF67A629218BA3006696C2 /* RandomImagePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A029218BA3006696C2 /* RandomImagePresenter.swift */; };
-		70EF67A829218BA3006696C2 /* RandomImageRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A229218BA3006696C2 /* RandomImageRouter.swift */; };
 		70EF67A929218BA3006696C2 /* RandomImageModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A329218BA3006696C2 /* RandomImageModels.swift */; };
 		70EF67AA29218BA3006696C2 /* RandomImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A429218BA3006696C2 /* RandomImageViewController.swift */; };
 		70EF67AB29218BA3006696C2 /* RandomImageInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF67A529218BA3006696C2 /* RandomImageInteractor.swift */; };
@@ -99,7 +98,6 @@
 		70EF679729218B42006696C2 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		70EF679829218B42006696C2 /* MainInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainInteractor.swift; sourceTree = "<group>"; };
 		70EF67A029218BA3006696C2 /* RandomImagePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImagePresenter.swift; sourceTree = "<group>"; };
-		70EF67A229218BA3006696C2 /* RandomImageRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageRouter.swift; sourceTree = "<group>"; };
 		70EF67A329218BA3006696C2 /* RandomImageModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageModels.swift; sourceTree = "<group>"; };
 		70EF67A429218BA3006696C2 /* RandomImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageViewController.swift; sourceTree = "<group>"; };
 		70EF67A529218BA3006696C2 /* RandomImageInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomImageInteractor.swift; sourceTree = "<group>"; };
@@ -271,7 +269,6 @@
 			isa = PBXGroup;
 			children = (
 				70EF67A029218BA3006696C2 /* RandomImagePresenter.swift */,
-				70EF67A229218BA3006696C2 /* RandomImageRouter.swift */,
 				70EF67A329218BA3006696C2 /* RandomImageModels.swift */,
 				70EF67A429218BA3006696C2 /* RandomImageViewController.swift */,
 				70EF67A529218BA3006696C2 /* RandomImageInteractor.swift */,
@@ -463,7 +460,6 @@
 				70EF679929218B42006696C2 /* MainPresenter.swift in Sources */,
 				70EF67B529218BBA006696C2 /* GalleryRouter.swift in Sources */,
 				70EF67C529250391006696C2 /* UIView + Animation.swift in Sources */,
-				70EF67A829218BA3006696C2 /* RandomImageRouter.swift in Sources */,
 				70EF67B429218BBA006696C2 /* GalleryWorker.swift in Sources */,
 				70EF679B29218B42006696C2 /* MainRouter.swift in Sources */,
 				70EF67BD2923BB35006696C2 /* RandomImageComponent.swift in Sources */,

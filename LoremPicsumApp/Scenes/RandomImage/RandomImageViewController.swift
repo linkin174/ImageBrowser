@@ -14,6 +14,20 @@ import Combine
 import SnapKit
 import SwiftUI
 
+private struct Constants {
+    static let loadButtonDiameter: CGFloat = 60
+    static let shareButtonDiameter: CGFloat = 40
+    static let backButtonSize: CGFloat = 30
+    static let bottomInset: CGFloat = 40
+    static let topInset: CGFloat = 60
+
+    static let strokeLineWidth: CGFloat = 5
+    static let strokeColor: CGColor = #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1).cgColor
+
+    static let loadingAnimationDuration: Double = 0.2
+    static let fadeAnimationDuration: Double = 0.4
+}
+
 protocol RandomImageDisplayLogic: AnyObject {
     func display(viewModel: RandomImage.ViewModel)
 }
@@ -22,7 +36,6 @@ final class RandomImageViewController: UIViewController {
     // MARK: Private Properties
 
     private var interactor: RandomImageBusinessLogic?
-    private var router: (NSObjectProtocol & RandomImageRoutingLogic & RandomImageDataPassing)?
     private let fetcher: FetchingProtocol
     private var isInterfaceHidden = false
     private let progressPublisher: Published<Double>.Publisher?
@@ -39,13 +52,13 @@ final class RandomImageViewController: UIViewController {
         view.onTapGesture(self, #selector(hideInterface))
         return view
     }()
-    #warning("Refactor code, try to remove layer logic from here. Make Struct to hold all of the settings")
+
     private lazy var loadingIndicatorLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.lineCap = .round
-        layer.strokeColor = UIColor.green.cgColor
+        layer.strokeColor = Constants.strokeColor
         layer.fillColor = UIColor.clear.cgColor
-        layer.lineWidth = 5
+        layer.lineWidth = Constants.strokeLineWidth
         layer.strokeEnd = 0
         return layer
     }()
@@ -60,7 +73,6 @@ final class RandomImageViewController: UIViewController {
 
     private lazy var loadButton: UIButton = {
         let button = UIButton(type: .custom)
-        button.clipsToBounds = true
         button.backgroundColor = #colorLiteral(red: 0.1411764771, green: 0.3960784376, blue: 0.5647059083, alpha: 1)
         button.setImage(UIImage(systemName: "arrow.triangle.2.circlepath"), for: .normal)
         button.setImage(UIImage(), for: .selected)
@@ -69,9 +81,9 @@ final class RandomImageViewController: UIViewController {
         button.imageEdgeInsets = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
         button.contentVerticalAlignment = .fill
         button.contentHorizontalAlignment = .fill
-        button.layer.cornerRadius = 30
-        button.addTarget(self, action: #selector(loadImage), for: .touchUpInside)
+        button.layer.cornerRadius = Constants.loadButtonDiameter / 2
         button.dropShadow(color: .black, offsetX: 0, offsetY: 5)
+        button.addTarget(self, action: #selector(loadImage), for: .touchUpInside)
         return button
     }()
 
@@ -106,6 +118,7 @@ final class RandomImageViewController: UIViewController {
         self.progressPublisher = progressPublisher
         super.init(nibName: nil, bundle: nil)
         setup()
+        makeSubscriptions()
     }
 
     @available(*, unavailable)
@@ -119,20 +132,6 @@ final class RandomImageViewController: UIViewController {
         super.viewDidLoad()
         setupConstraints()
         loadImage()
-        progressPublisher?
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    print("subscribed")
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            } receiveValue: { progress in
-                DispatchQueue.main.async {
-                    self.animateProgress(currentProgress: progress)
-                }
-            }
-            .store(in: &cancellables)
     }
 
     // MARK: Private methods
@@ -141,13 +140,26 @@ final class RandomImageViewController: UIViewController {
         let viewController = self
         let interactor = RandomImageInteractor(fetcher: fetcher)
         let presenter = RandomImagePresenter()
-        let router = RandomImageRouter()
         viewController.interactor = interactor
-        viewController.router = router
         interactor.presenter = presenter
         presenter.viewController = viewController
-        router.viewController = viewController
-        router.dataStore = interactor
+    }
+
+    private func makeSubscriptions() {
+        progressPublisher?
+            .sink { completion in
+                switch completion {
+                case .finished:
+                    print("subscribed")
+                case .failure(let error):
+                    print(error.localizedDescription)
+                }
+            } receiveValue: { [weak self] progress in
+                DispatchQueue.main.async {
+                    self?.animateProgress(currentProgress: progress)
+                }
+            }
+            .store(in: &cancellables)
     }
 
     private func setupConstraints() {
@@ -159,16 +171,15 @@ final class RandomImageViewController: UIViewController {
 
         loadButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().inset(40)
-            make.width.height.equalTo(60)
-            loadButton.layer.cornerRadius = 30
+            make.bottom.equalToSuperview().inset(Constants.bottomInset)
+            make.width.height.equalTo(Constants.loadButtonDiameter)
         }
 
         shareButton.snp.makeConstraints { make in
             make.trailing.equalTo(imageView.snp.trailing).inset(40)
-            make.bottom.equalToSuperview().inset(40)
-            make.width.height.equalTo(40)
-            shareButton.layer.cornerRadius = 20
+            make.bottom.equalToSuperview().inset(Constants.bottomInset)
+            make.width.height.equalTo(Constants.shareButtonDiameter)
+            shareButton.layer.cornerRadius = Constants.shareButtonDiameter / 2
         }
 
         indicator.snp.makeConstraints { make in
@@ -177,12 +188,12 @@ final class RandomImageViewController: UIViewController {
 
         backButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().inset(20)
-            make.top.equalToSuperview().inset(60)
-            make.width.height.equalTo(30)
+            make.top.equalToSuperview().inset(Constants.topInset)
+            make.width.height.equalTo(Constants.backButtonSize)
         }
     }
 
-    private func animateImageView(with image: UIImage) {
+    private func animateImageChange(with image: UIImage) {
         UIView.transition(with: imageView,
                           duration: 0.7,
                           options: .transitionCrossDissolve) {
@@ -194,7 +205,7 @@ final class RandomImageViewController: UIViewController {
 
     private func animateProgress(currentProgress: Double) {
         let path = UIBezierPath(arcCenter: loadButton.center,
-                                radius: loadButton.frame.width / 2,
+                                radius: Constants.loadButtonDiameter / 2,
                                 startAngle: -CGFloat.pi * 0.5,
                                 endAngle: CGFloat.pi * 1.5,
                                 clockwise: true)
@@ -203,7 +214,7 @@ final class RandomImageViewController: UIViewController {
         let animation = CABasicAnimation(keyPath: "strokeEnd")
         animation.fromValue = 0
         animation.toValue = currentProgress
-        animation.duration = 0.4
+        animation.duration = Constants.loadingAnimationDuration
         animation.fillMode = .forwards
         loadingIndicatorLayer.add(animation, forKey: "loading")
     }
@@ -224,13 +235,13 @@ final class RandomImageViewController: UIViewController {
 
     @objc private func hideInterface() {
         if isInterfaceHidden {
-            shareButton.animateFade(.fadeIn, 0.5)
-            loadButton.animateFade(.fadeIn, 0.5)
-            backButton.animateFade(.fadeIn, 0.5)
+            shareButton.animateFade(.fadeIn, Constants.fadeAnimationDuration)
+            loadButton.animateFade(.fadeIn, Constants.fadeAnimationDuration)
+            backButton.animateFade(.fadeIn, Constants.fadeAnimationDuration)
         } else {
-            shareButton.animateFade(.fadeOut, 0.5)
-            loadButton.animateFade(.fadeOut, 0.5)
-            backButton.animateFade(.fadeOut, 0.5)
+            shareButton.animateFade(.fadeOut, Constants.fadeAnimationDuration)
+            loadButton.animateFade(.fadeOut, Constants.fadeAnimationDuration)
+            backButton.animateFade(.fadeOut, Constants.fadeAnimationDuration)
         }
         isInterfaceHidden.toggle()
     }
@@ -249,7 +260,7 @@ extension RandomImageViewController: RandomImageDisplayLogic {
                 self.shareButton.isEnabled = true
                 self.indicator.stopAnimating()
                 self.loadButton.isSelected = false
-                self.animateImageView(with: image)
+                self.animateImageChange(with: image)
             }
         case .display(let error):
             showAlert("Error Loading Image", "Something went wrong: \(error). \n"
