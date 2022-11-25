@@ -50,14 +50,6 @@ class RandomImageInteractor: RandomImageBusinessLogic, RandomImageDataStore {
                     self.presenter?.present(response: .presentError(error: failure))
                 }
             }
-//            Task {
-//                do {
-//                    let data = try await fetcher.fetchRandomImage()
-//                    presenter?.present(response: .presentRandomImageFrom(data: data))
-//                } catch let error {
-//                    presenter?.present(response: .presentError(error: error))
-//                }
-//            }
         }
     }
 }
