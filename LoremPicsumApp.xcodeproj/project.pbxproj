@@ -23,7 +23,7 @@
 		704D6E1C292C158400ACE040 /* FavoritesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E16292C158400ACE040 /* FavoritesViewController.swift */; };
 		704D6E1D292C158400ACE040 /* FavoritesInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E17292C158400ACE040 /* FavoritesInteractor.swift */; };
 		704D6E21292C15C800ACE040 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704D6E20292C15C800ACE040 /* AboutViewController.swift */; };
-		7090D5542931429200961128 /* UIActivityViewController + BugFix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7090D5532931429200961128 /* UIActivityViewController + BugFix.swift */; };
+		7090D55A2931EE6200961128 /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7090D5592931EE6200961128 /* ShareViewController.swift */; };
 		70EF677A29216A37006696C2 /* RootComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF677929216A37006696C2 /* RootComponent.swift */; };
 		70EF677F29216AC2006696C2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF677E29216AC2006696C2 /* NetworkService.swift */; };
 		70EF678129216B59006696C2 /* NetworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF678029216B59006696C2 /* NetworkFetcher.swift */; };
@@ -88,7 +88,7 @@
 		704D6E16292C158400ACE040 /* FavoritesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewController.swift; sourceTree = "<group>"; };
 		704D6E17292C158400ACE040 /* FavoritesInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesInteractor.swift; sourceTree = "<group>"; };
 		704D6E20292C15C800ACE040 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
-		7090D5532931429200961128 /* UIActivityViewController + BugFix.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIActivityViewController + BugFix.swift"; sourceTree = "<group>"; };
+		7090D5592931EE6200961128 /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		70EF677929216A37006696C2 /* RootComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootComponent.swift; sourceTree = "<group>"; };
 		70EF677E29216AC2006696C2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		70EF678029216B59006696C2 /* NetworkFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkFetcher.swift; sourceTree = "<group>"; };
@@ -297,12 +297,12 @@
 		70EF67B92922B208006696C2 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				7090D5592931EE6200961128 /* ShareViewController.swift */,
 				70EF67BA2922B221006696C2 /* UIViewController + Preview.swift */,
 				70EF67C22924F967006696C2 /* UIViewController + Alert.swift */,
 				70EF67C429250391006696C2 /* UIView + Animation.swift */,
 				70EF67C82926AEAC006696C2 /* UIView + dropShadow.swift */,
 				70EF67C629253B25006696C2 /* UIView + onTapGesture.swift */,
-				7090D5532931429200961128 /* UIActivityViewController + BugFix.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -467,6 +467,7 @@
 				70EF679B29218B42006696C2 /* MainRouter.swift in Sources */,
 				70EF67BD2923BB35006696C2 /* RandomImageComponent.swift in Sources */,
 				70EF677F29216AC2006696C2 /* NetworkService.swift in Sources */,
+				7090D55A2931EE6200961128 /* ShareViewController.swift in Sources */,
 				704D6E18292C158400ACE040 /* FavoritesPresenter.swift in Sources */,
 				70EF678829218806006696C2 /* NeedleGenerated.swift in Sources */,
 				70EF678629217883006696C2 /* API.swift in Sources */,
@@ -481,7 +482,6 @@
 				70EF67B729218BBA006696C2 /* GalleryViewController.swift in Sources */,
 				70EF67C729253B25006696C2 /* UIView + onTapGesture.swift in Sources */,
 				70EF67B829218BBA006696C2 /* GalleryInteractor.swift in Sources */,
-				7090D5542931429200961128 /* UIActivityViewController + BugFix.swift in Sources */,
 				70EF679E29218B42006696C2 /* MainInteractor.swift in Sources */,
 				704D6E21292C15C800ACE040 /* AboutViewController.swift in Sources */,
 				70EF67AA29218BA3006696C2 /* RandomImageViewController.swift in Sources */,

@@ -44,7 +44,7 @@ final class RandomImageViewController: UIViewController {
     // MARK: Views
 
     private lazy var imageView: UIImageView = {
-        let view = UIImageView(frame: self.view.bounds)
+        let view = UIImageView(frame: self.view.frame)
         view.isUserInteractionEnabled = true
         view.clipsToBounds = true
         view.image = UIImage(named: "dummy")
@@ -53,7 +53,7 @@ final class RandomImageViewController: UIViewController {
         return view
     }()
 
-    private lazy var loadingIndicatorLayer: CAShapeLayer = {
+    private let loadingIndicatorLayer: CAShapeLayer = {
         let layer = CAShapeLayer()
         layer.lineCap = .round
         layer.strokeColor = Constants.strokeColor
@@ -205,7 +205,7 @@ final class RandomImageViewController: UIViewController {
 
     private func animateProgress(currentProgress: Double) {
         let path = UIBezierPath(arcCenter: loadButton.center,
-                                radius: Constants.loadButtonDiameter / 2,
+                                radius: Constants.loadButtonDiameter / 2 + Constants.strokeLineWidth / 2,
                                 startAngle: -CGFloat.pi * 0.5,
                                 endAngle: CGFloat.pi * 1.5,
                                 clockwise: true)
@@ -220,7 +220,6 @@ final class RandomImageViewController: UIViewController {
     }
 
     @objc private func loadImage() {
-        animateProgress(currentProgress: 0)
         interactor?.makeRequest(request: .loadRandomImage)
         loadButton.isSelected = true
         indicator.startAnimating()
@@ -229,8 +228,8 @@ final class RandomImageViewController: UIViewController {
 
     @objc private func shareImage() {
         guard let image = imageView.image else { return }
-        let shareSheet = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        present(shareSheet, animated: true)
+        let shareVC = ShareViewController(activityItems: [image])
+        present(shareVC, animated: false)
     }
 
     @objc private func hideInterface() {
