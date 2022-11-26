@@ -50,6 +50,10 @@ final class RandomImageViewController: UIViewController {
         view.image = UIImage(named: "dummy")
         view.contentMode = .scaleAspectFill
         view.onTapGesture(self, #selector(hideInterface))
+        view.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(pinchToZoom)))
+        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap))
+        doubleTap.numberOfTapsRequired = 2
+        view.addGestureRecognizer(doubleTap)
         return view
     }()
 
@@ -176,7 +180,7 @@ final class RandomImageViewController: UIViewController {
         }
 
         shareButton.snp.makeConstraints { make in
-            make.trailing.equalTo(imageView.snp.trailing).inset(40)
+            make.trailing.equalToSuperview().inset(40)
             make.bottom.equalToSuperview().inset(Constants.bottomInset)
             make.width.height.equalTo(Constants.shareButtonDiameter)
             shareButton.layer.cornerRadius = Constants.shareButtonDiameter / 2
@@ -219,6 +223,8 @@ final class RandomImageViewController: UIViewController {
         loadingIndicatorLayer.add(animation, forKey: "loading")
     }
 
+    // MARK: OBJC Methods
+
     @objc private func loadImage() {
         interactor?.makeRequest(request: .loadRandomImage)
         loadButton.isSelected = true
@@ -248,6 +254,17 @@ final class RandomImageViewController: UIViewController {
     @objc private func tapBack() {
         dismiss(animated: true)
     }
+
+    @objc private func pinchToZoom(sender: UIPinchGestureRecognizer) {
+        #warning("Fix zoom")
+
+    }
+
+    @objc private func doubleTap() {
+        imageView.withAnimation(duration: 0.6) {
+            self.imageView.transform = .identity
+        }
+    }
 }
 
 // MARK: Extensions
@@ -255,7 +272,8 @@ final class RandomImageViewController: UIViewController {
 extension RandomImageViewController: RandomImageDisplayLogic {
     func display(viewModel: RandomImage.ViewModel) {
         switch viewModel {
-        case .displayRandom(let image): DispatchQueue.main.async { [unowned self] in
+        case .displayRandom(let image):
+            DispatchQueue.main.async { [unowned self] in
                 self.shareButton.isEnabled = true
                 self.indicator.stopAnimating()
                 self.loadButton.isSelected = false
