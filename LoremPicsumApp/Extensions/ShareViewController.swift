@@ -32,16 +32,11 @@ final class ShareViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    deinit {
-        print("Transparent gone")
-    }
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Present UIActivityViewController here
         presentShareSheet()
     }
-
 
     fileprivate func presentShareSheet() {
         let shareSheet = UIActivityViewController(activityItems: activityItems,
