@@ -19,7 +19,6 @@ protocol RandomImageBuilder {
 
 final class RandomImageComponent: Component<RandomImageDependency>, RandomImageBuilder {
     var randomImageViewController: UIViewController {
-        RandomImageViewController(fetcher: dependency.fetcher,
-                                  progressPublisher: dependency.networkService.progressPublisher)
+        RandomImageViewController(fetcher: dependency.fetcher)
     }
 }
