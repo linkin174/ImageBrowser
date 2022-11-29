@@ -38,8 +38,6 @@ final class RandomImageViewController: UIViewController {
     private var interactor: RandomImageBusinessLogic?
     private let fetcher: FetchingProtocol
     private var isInterfaceHidden = false
-    private let progressPublisher: Published<Double>.Publisher?
-    private var cancellables = Set<AnyCancellable>()
 
     // MARK: Views
 
@@ -49,30 +47,16 @@ final class RandomImageViewController: UIViewController {
         view.clipsToBounds = true
         view.image = UIImage(named: "dummy")
         view.contentMode = .scaleAspectFill
-        view.onTapGesture(self, #selector(hideInterface))
-        view.addGestureRecognizer(UIPinchGestureRecognizer(target: self, action: #selector(pinchToZoom)))
-        let doubleTap = UITapGestureRecognizer(target: self, action: #selector(doubleTap))
-        doubleTap.numberOfTapsRequired = 2
-        view.addGestureRecognizer(doubleTap)
+        let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideInterface))
+        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTap))
+        let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(pinchToZoom))
+        tapRecognizer.require(toFail: doubleTapRecognizer)
+        tapRecognizer.numberOfTapsRequired = 1
+        doubleTapRecognizer.numberOfTapsRequired = 2
+        view.addGestureRecognizer(tapRecognizer)
+        view.addGestureRecognizer(pinchRecognizer)
+        view.addGestureRecognizer(doubleTapRecognizer)
         return view
-    }()
-
-    private let loadingIndicatorLayer: CAShapeLayer = {
-        let layer = CAShapeLayer()
-        layer.lineCap = .round
-        layer.strokeColor = Constants.strokeColor
-        layer.fillColor = UIColor.clear.cgColor
-        layer.lineWidth = Constants.strokeLineWidth
-        layer.strokeEnd = 0
-        return layer
-    }()
-
-    private let indicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.color = UIColor.white
-        indicator.startAnimating()
-        indicator.hidesWhenStopped = true
-        return indicator
     }()
 
     private lazy var loadButton: UIButton = {
@@ -117,12 +101,10 @@ final class RandomImageViewController: UIViewController {
 
     // MARK: Initializers
 
-    init(fetcher: FetchingProtocol, progressPublisher: Published<Double>.Publisher?) {
+    init(fetcher: FetchingProtocol) {
         self.fetcher = fetcher
-        self.progressPublisher = progressPublisher
         super.init(nibName: nil, bundle: nil)
         setup()
-        makeSubscriptions()
     }
 
     @available(*, unavailable)
@@ -135,6 +117,10 @@ final class RandomImageViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupConstraints()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         loadImage()
     }
 
@@ -149,29 +135,11 @@ final class RandomImageViewController: UIViewController {
         presenter.viewController = viewController
     }
 
-    private func makeSubscriptions() {
-        progressPublisher?
-            .sink { completion in
-                switch completion {
-                case .finished:
-                    print("subscribed")
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
-            } receiveValue: { [weak self] progress in
-                DispatchQueue.main.async {
-                    self?.animateProgress(currentProgress: progress)
-                }
-            }
-            .store(in: &cancellables)
-    }
-
     private func setupConstraints() {
         view.addSubview(imageView)
         view.addSubview(loadButton)
         view.addSubview(shareButton)
         view.addSubview(backButton)
-        loadButton.addSubview(indicator)
 
         loadButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -184,10 +152,6 @@ final class RandomImageViewController: UIViewController {
             make.bottom.equalToSuperview().inset(Constants.bottomInset)
             make.width.height.equalTo(Constants.shareButtonDiameter)
             shareButton.layer.cornerRadius = Constants.shareButtonDiameter / 2
-        }
-
-        indicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
         }
 
         backButton.snp.makeConstraints { make in
@@ -207,28 +171,32 @@ final class RandomImageViewController: UIViewController {
         }
     }
 
-    private func animateProgress(currentProgress: Double) {
-        let path = UIBezierPath(arcCenter: loadButton.center,
-                                radius: Constants.loadButtonDiameter / 2 + Constants.strokeLineWidth / 2,
-                                startAngle: -CGFloat.pi * 0.5,
-                                endAngle: CGFloat.pi * 1.5,
-                                clockwise: true)
-        loadingIndicatorLayer.path = path.cgPath
-        imageView.layer.addSublayer(loadingIndicatorLayer)
-        let animation = CABasicAnimation(keyPath: "strokeEnd")
-        animation.fromValue = 0
-        animation.toValue = currentProgress
-        animation.duration = Constants.loadingAnimationDuration
-        animation.fillMode = .forwards
-        loadingIndicatorLayer.add(animation, forKey: "loading")
+    private func animateLoadButton() {
+        let spinAnimation = CABasicAnimation(keyPath: "transform.rotation")
+        spinAnimation.fromValue = 0
+        spinAnimation.toValue = CGFloat.pi
+        spinAnimation.duration = 1
+        spinAnimation.repeatCount = .infinity
+        loadButton.imageView?.layer.add(spinAnimation, forKey: "spin")
+    }
+
+    private func stopLoadButtonAnimation() {
+        guard let layer = loadButton.imageView?.layer.presentation() else { return }
+        guard let angle = layer.value(forKeyPath: "transform.rotation") as? CGFloat else { return }
+        let spinAnimation = CABasicAnimation(keyPath: "transform.rotation")
+        if angle > 2 {
+            spinAnimation.fromValue = angle
+            spinAnimation.toValue = CGFloat.pi
+        }
+        loadButton.imageView?.layer.add(spinAnimation, forKey: "spin")
     }
 
     // MARK: OBJC Methods
 
     @objc private func loadImage() {
         interactor?.makeRequest(request: .loadRandomImage)
-        loadButton.isSelected = true
-        indicator.startAnimating()
+        animateLoadButton()
+        loadButton.isEnabled = false
         shareButton.isEnabled = false
     }
 
@@ -275,8 +243,8 @@ extension RandomImageViewController: RandomImageDisplayLogic {
         case .displayRandom(let image):
             DispatchQueue.main.async { [unowned self] in
                 self.shareButton.isEnabled = true
-                self.indicator.stopAnimating()
-                self.loadButton.isSelected = false
+                self.loadButton.isEnabled = true
+                self.stopLoadButtonAnimation()
                 self.animateImageChange(with: image)
             }
         case .display(let error):
@@ -290,7 +258,7 @@ extension RandomImageViewController: RandomImageDisplayLogic {
 
 struct RandomImageVC_Previews: PreviewProvider {
     static var previews: some View {
-        RandomImageViewController(fetcher: NetworkFetcher(networkService: NetworkService()), progressPublisher: nil)
+        RandomImageViewController(fetcher: NetworkFetcher(networkService: NetworkService()))
             .makePreview()
     }
 }
