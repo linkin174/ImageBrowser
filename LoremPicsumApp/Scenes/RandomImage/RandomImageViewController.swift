@@ -48,7 +48,7 @@ final class RandomImageViewController: UIViewController {
         view.image = UIImage(named: "dummy")
         view.contentMode = .scaleAspectFill
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideInterface))
-        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(doubleTap))
+        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(restoreIdentity))
         let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(pinchToZoom))
         tapRecognizer.require(toFail: doubleTapRecognizer)
         tapRecognizer.numberOfTapsRequired = 1
@@ -224,12 +224,33 @@ final class RandomImageViewController: UIViewController {
     }
 
     @objc private func pinchToZoom(sender: UIPinchGestureRecognizer) {
-        #warning("Fix zoom")
+        guard let view = sender.view else { return }
+        var scaleFactor = view.transform.a
+        let maxScale: CGFloat = 5
 
+        switch sender.state {
+        case .began:
+            sender.scale = scaleFactor
+        case .changed:
+            if sender.scale > 1 {
+                scaleFactor = sender.scale
+            }
+        case .ended:
+            if sender.scale > maxScale {
+                UIView.animate(withDuration: 0.5) {
+                    self.imageView.transform = CGAffineTransformMakeScale(maxScale, maxScale)
+                }
+                scaleFactor = maxScale
+            }
+        case .failed, .cancelled:
+            restoreIdentity()
+        default: break
+        }
+        view.transform = CGAffineTransformMakeScale(scaleFactor, scaleFactor)
     }
 
-    @objc private func doubleTap() {
-        imageView.withAnimation(duration: 0.6) {
+    @objc private func restoreIdentity() {
+        UIView.animate(withDuration: 0.5) {
             self.imageView.transform = .identity
         }
     }
