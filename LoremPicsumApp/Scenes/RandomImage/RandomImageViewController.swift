@@ -41,14 +41,25 @@ final class RandomImageViewController: UIViewController {
 
     // MARK: Views
 
+    private lazy var scrollView: UIScrollView = {
+        let scrollview = UIScrollView(frame: view.frame)
+        scrollview.bounces = true
+        scrollview.showsVerticalScrollIndicator = false
+        scrollview.showsHorizontalScrollIndicator = false
+        scrollview.contentSize = imageView.bounds.size
+        scrollview.minimumZoomScale = 1
+        scrollview.maximumZoomScale = 3
+        scrollview.delegate = imageView
+        return scrollview
+    }()
+
     private lazy var imageView: UIImageView = {
-        let view = UIImageView(frame: self.view.frame)
+        let view = UIImageView(frame: view.frame)
         view.isUserInteractionEnabled = true
-        view.clipsToBounds = true
         view.image = UIImage(named: "dummy")
         view.contentMode = .scaleAspectFill
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(hideInterface))
-        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(restoreIdentity))
+        let doubleTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(restoreZoom))
         let pinchRecognizer = UIPinchGestureRecognizer(target: self, action: #selector(pinchToZoom))
         tapRecognizer.require(toFail: doubleTapRecognizer)
         tapRecognizer.numberOfTapsRequired = 1
@@ -136,10 +147,11 @@ final class RandomImageViewController: UIViewController {
     }
 
     private func setupConstraints() {
-        view.addSubview(imageView)
+        view.addSubview(scrollView)
         view.addSubview(loadButton)
         view.addSubview(shareButton)
         view.addSubview(backButton)
+        scrollView.addSubview(imageView)
 
         loadButton.snp.makeConstraints { make in
             make.centerX.equalToSuperview()
@@ -224,9 +236,10 @@ final class RandomImageViewController: UIViewController {
     }
 
     @objc private func pinchToZoom(sender: UIPinchGestureRecognizer) {
+        /*
         guard let view = sender.view else { return }
         var scaleFactor = view.transform.a
-        let maxScale: CGFloat = 5
+        let maxScale: CGFloat = 3
 
         switch sender.state {
         case .began:
@@ -238,7 +251,7 @@ final class RandomImageViewController: UIViewController {
         case .ended:
             if sender.scale > maxScale {
                 UIView.animate(withDuration: 0.5) {
-                    self.imageView.transform = CGAffineTransformMakeScale(maxScale, maxScale)
+                    view.transform = CGAffineTransformMakeScale(maxScale, maxScale)
                 }
                 scaleFactor = maxScale
             }
@@ -247,11 +260,20 @@ final class RandomImageViewController: UIViewController {
         default: break
         }
         view.transform = CGAffineTransformMakeScale(scaleFactor, scaleFactor)
+         */
+        switch sender.state {
+        case .began:
+            sender.scale = scrollView.zoomScale
+        case .changed:
+            scrollView.zoomScale = sender.scale
+        default:
+            break
+        }
     }
 
-    @objc private func restoreIdentity() {
+    @objc private func restoreZoom() {
         UIView.animate(withDuration: 0.5) {
-            self.imageView.transform = .identity
+            self.scrollView.zoomScale = self.scrollView.minimumZoomScale
         }
     }
 }
@@ -272,6 +294,12 @@ extension RandomImageViewController: RandomImageDisplayLogic {
             showAlert("Error Loading Image", "Something went wrong: \(error). \n"
                 + "Check your internet connection and try again")
         }
+    }
+}
+
+extension UIImageView: UIScrollViewDelegate {
+    public func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        self
     }
 }
 
