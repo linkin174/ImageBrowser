@@ -15,6 +15,8 @@ struct Photo: Identifiable, Codable {
     let url: String
     let downloadUrl: String
     var previewUrl: String {
-        "\(API.scheme)://\(API.host)/id/\(id)/\(width / 10)/\(height / 10)"
+        let width = String(width / 10)
+        let height = String(height / 10)
+        return MainAPI.scheme + "://" + MainAPI.host + "/id/" + id + "/" + width + "/" + height
     }
 }

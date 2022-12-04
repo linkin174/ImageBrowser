@@ -83,8 +83,8 @@ final class NetworkService: NetworkingProtocol {
 
     fileprivate func createURL(_ method: String, _ parameters: [String: String]?) -> URL? {
         var components = URLComponents()
-        components.scheme = API.scheme
-        components.host = API.host
+        components.scheme = MainAPI.scheme
+        components.host = MainAPI.host
         components.path = method
         if let parameters {
             components.queryItems = parameters.map { URLQueryItem(name: $0, value: $1) }

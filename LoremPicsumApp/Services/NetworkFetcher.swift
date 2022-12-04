@@ -57,7 +57,7 @@ final class NetworkFetcher: FetchingProtocol {
     /// - Returns: Return image data of random image from API
     func fetchRandomImage() async throws -> Data {
         do {
-            let data = try await networkService.makeRequest(API.randomImage, nil)
+            let data = try await networkService.makeRequest(MainAPI.randomImage, nil)
             return data
         } catch let error {
             throw error
@@ -92,7 +92,7 @@ final class NetworkFetcher: FetchingProtocol {
             parameters["limit"] = String(limit)
         }
         do {
-            let data = try await networkService.makeRequest(API.listPhotos, parameters)
+            let data = try await networkService.makeRequest(MainAPI.listPhotos, parameters)
             let photos = try decode(from: data, to: [Photo].self)
             return photos
         } catch let error {

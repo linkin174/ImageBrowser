@@ -39,7 +39,7 @@
 		70EF677A29216A37006696C2 /* RootComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF677929216A37006696C2 /* RootComponent.swift */; };
 		70EF677F29216AC2006696C2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF677E29216AC2006696C2 /* NetworkService.swift */; };
 		70EF678129216B59006696C2 /* NetworkFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF678029216B59006696C2 /* NetworkFetcher.swift */; };
-		70EF678629217883006696C2 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF678529217883006696C2 /* API.swift */; };
+		70EF678629217883006696C2 /* MainAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF678529217883006696C2 /* MainAPI.swift */; };
 		70EF679929218B42006696C2 /* MainPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679329218B42006696C2 /* MainPresenter.swift */; };
 		70EF679B29218B42006696C2 /* MainRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679529218B42006696C2 /* MainRouter.swift */; };
 		70EF679C29218B42006696C2 /* MainModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70EF679629218B42006696C2 /* MainModels.swift */; };
@@ -114,7 +114,7 @@
 		70EF677929216A37006696C2 /* RootComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootComponent.swift; sourceTree = "<group>"; };
 		70EF677E29216AC2006696C2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		70EF678029216B59006696C2 /* NetworkFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkFetcher.swift; sourceTree = "<group>"; };
-		70EF678529217883006696C2 /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		70EF678529217883006696C2 /* MainAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainAPI.swift; sourceTree = "<group>"; };
 		70EF679329218B42006696C2 /* MainPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainPresenter.swift; sourceTree = "<group>"; };
 		70EF679529218B42006696C2 /* MainRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainRouter.swift; sourceTree = "<group>"; };
 		70EF679629218B42006696C2 /* MainModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainModels.swift; sourceTree = "<group>"; };
@@ -265,7 +265,7 @@
 			children = (
 				70EF677E29216AC2006696C2 /* NetworkService.swift */,
 				70EF678029216B59006696C2 /* NetworkFetcher.swift */,
-				70EF678529217883006696C2 /* API.swift */,
+				70EF678529217883006696C2 /* MainAPI.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -514,7 +514,7 @@
 				7044D6D3293C77E300CA5AAD /* UIFont + CustomFonts.swift in Sources */,
 				7090D55A2931EE6200961128 /* ShareViewController.swift in Sources */,
 				704D6E18292C158400ACE040 /* FavoritesPresenter.swift in Sources */,
-				70EF678629217883006696C2 /* API.swift in Sources */,
+				70EF678629217883006696C2 /* MainAPI.swift in Sources */,
 				70EF67C92926AEAC006696C2 /* UIView + dropShadow.swift in Sources */,
 				70EF67BB2922B221006696C2 /* UIViewController + Preview.swift in Sources */,
 				70EF67CE2929009E006696C2 /* PhotoCell.swift in Sources */,

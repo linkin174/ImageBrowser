@@ -10,7 +10,7 @@ import UIKit
 
 let screen = UIScreen.main.bounds
 
-struct API {
+struct MainAPI {
     static let scheme = "https"
     static let host = "picsum.photos"
     static let listPhotos = "/v2/list"
