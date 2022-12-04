@@ -13,11 +13,15 @@ protocol GalleryDependency: Dependency {
 }
 
 protocol GalleryBuilder {
-    var galleryViewController: UIViewController { get }
+    var galleryViewController: GalleryViewController { get }
 }
 
 final class GalleryComponent: Component<GalleryDependency>, GalleryBuilder {
-    var galleryViewController: UIViewController {
-        GalleryViewController(fetcher: dependency.fetcher)
+    var galleryViewController: GalleryViewController {
+        GalleryViewController(fetcher: dependency.fetcher, photoDetailsBuilder: detailsComponent)
+    }
+
+    var detailsComponent: PhotoDetailsComponent {
+        PhotoDetailsComponent(parent: self)
     }
 }

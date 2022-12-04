@@ -31,8 +31,7 @@ final class MainPresenter: MainPresentationLogic {
                 viewController?.display(viewModel: .displayBackgroundImage(image: image))
             }
         case .presentError(let error):
-            guard let error = error as? APIError else { return }
-            viewController?.display(viewModel: .displayError(text: error.rawValue))
+            viewController?.display(viewModel: .displayError(text: error.localizedDescription))
         }
     }
 }

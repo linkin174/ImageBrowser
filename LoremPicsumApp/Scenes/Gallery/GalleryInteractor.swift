@@ -13,13 +13,16 @@
 import UIKit
 
 protocol GalleryBusinessLogic {
-    func fetchPhotos(page: Int?, perpage: Int?)
+    func make(request: Gallery.Request)
 }
 
 protocol GalleryDataStore {
+    var photos: [Photo] { get }
 }
 
 class GalleryInteractor: GalleryBusinessLogic, GalleryDataStore {
+
+    var photos: [Photo] = []
 
     var presenter: GalleryPresentationLogic?
     var worker: GalleryWorker?
@@ -29,13 +32,17 @@ class GalleryInteractor: GalleryBusinessLogic, GalleryDataStore {
     init(fetcher: FetchingProtocol) {
         self.fetcher = fetcher
     }
-    func fetchPhotos(page: Int? = nil, perpage: Int? = nil) {
-        Task {
-            do {
-                let photos = try await fetcher.fetchPhotos(page: page, limit: perpage)
-                presenter?.present(photos: photos)
-            } catch let error {
-                presenter?.present(error: error)
+
+    func make(request: Gallery.Request) {
+        switch request {
+        case .fetchPhotos(let page, let perPage):
+            Task {
+                do {
+                    photos = try await fetcher.fetchPhotos(page: page, limit: perPage)
+                    presenter?.present(response: .presentPhotos(photos: photos))
+                } catch let error {
+                    presenter?.present(response: .presentError(error: error))
+                }
             }
         }
     }

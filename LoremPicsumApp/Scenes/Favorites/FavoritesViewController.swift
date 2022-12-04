@@ -10,7 +10,7 @@
 //  see http://clean-swift.com
 //
 
-import UIKit
+import SwiftUI
 
 protocol FavoritesDisplayLogic: AnyObject {
     func displaySomething(viewModel: Favorites.Something.ViewModel)
@@ -20,6 +20,24 @@ protocol FavoritesDisplayLogic: AnyObject {
 class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
     var interactor: FavoritesBusinessLogic?
     var router: (NSObjectProtocol & FavoritesRoutingLogic & FavoritesDataPassing)?
+    var delegate: UITextFieldDelegate!
+
+    private lazy var textField: UITextField = {
+        let field = UITextField(frame: CGRect(x: 10, y: 100, width: 100, height: 40))
+        field.backgroundColor = .white
+        field.addTarget(self, action: #selector(textFieldDidChange), for: .editingChanged)
+        return field
+    }()
+
+    private lazy var button: UIButton = {
+        let button = UIButton(frame: CGRect(x: 100, y: 100, width: 200, height: 100))
+        button.setTitle("TAP ME!", for: .normal)
+        button.setTitle("Look but don't touch!", for: .disabled)
+        button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.gray, for: .disabled)
+        button.isEnabled = false
+        return button
+    }()
 
     // MARK: Object lifecycle
 
@@ -65,7 +83,15 @@ class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
         super.viewDidLoad()
         doSomething()
         view.backgroundColor = .orange
+        view.addSubview(textField)
+        view.addSubview(button)
 //        doSomethingElse()
+    }
+
+    @objc private func textFieldDidChange(_ textField: UITextField) {
+        button.isEnabled = {
+            textField.text != ""
+        }()
     }
 
     // MARK: - receive events from UI
@@ -101,4 +127,13 @@ class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
 //    func displaySomethingElse(viewModel: Favorites.SomethingElse.ViewModel) {
 //        // do sometingElse with viewModel
 //    }
+}
+
+// MARK: Preview
+
+struct FavoritesVC_Previews: PreviewProvider {
+    static var previews: some View {
+        FavoritesViewController()
+            .makePreview()
+    }
 }

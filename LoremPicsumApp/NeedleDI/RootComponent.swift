@@ -17,7 +17,7 @@ final class RootComponent: BootstrapComponent {
     var fetcher: FetchingProtocol {
         return shared { NetworkFetcher(networkService: networkService) }
     }
-    
+
     var randomImageComponent: RandomImageComponent {
         RandomImageComponent(parent: self)
     }
@@ -27,7 +27,9 @@ final class RootComponent: BootstrapComponent {
     }
 
     var rootViewController: UIViewController {
-        MainViewController(fetcher: fetcher, randomImageBuilder: randomImageComponent, galleryBuilder: galleryComponent)
+        MainViewController(fetcher: fetcher,
+                           randomImageBuilder: randomImageComponent,
+                           galleryBuilder: galleryComponent)
     }
 
     var fetcherDiComponent: FetcherDiComponent {

@@ -38,7 +38,7 @@ final class ShareViewController: UIViewController {
         presentShareSheet()
     }
 
-    fileprivate func presentShareSheet() {
+    private func presentShareSheet() {
         let shareSheet = UIActivityViewController(activityItems: activityItems,
                                                   applicationActivities: applicationActivities)
         shareSheet.completionWithItemsHandler = { [weak self] _, _, _, _ in

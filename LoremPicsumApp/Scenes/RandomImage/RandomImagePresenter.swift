@@ -30,9 +30,7 @@ final class RandomImagePresenter: RandomImagePresentationLogic {
                 viewController?.display(viewModel: .displayRandom(image: image))
             }
         case .presentError(let error):
-            if let error = error as? APIError {
-                viewController?.display(viewModel: .display(error: error.rawValue))
-            }
+            viewController?.display(viewModel: .display(error: error.localizedDescription))
         }
     }
 }

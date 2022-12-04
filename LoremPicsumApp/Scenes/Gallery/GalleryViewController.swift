@@ -13,13 +13,8 @@
 import SnapKit
 import SwiftUI
 
-struct GalleryConstants {
-    static let defaultEdgeInset: CGFloat = 8
-}
-
 protocol GalleryDisplayLogic: AnyObject {
-    func display(photos: [Photo])
-    func display(errorMessage: String)
+    func display(viewModel: Gallery.Display)
 }
 
 class GalleryViewController: UIViewController {
@@ -28,10 +23,11 @@ class GalleryViewController: UIViewController {
     var interactor: GalleryBusinessLogic?
     var router: (NSObjectProtocol & GalleryRoutingLogic & GalleryDataPassing)?
     let fetcher: FetchingProtocol
+    let photoDetailsBuilder: PhotoDetailsBuilder?
 
     // MARK: Private properties
 
-    private var photos: [Photo] = [] {
+    private var photos: [PhotoViewModel] = [] {
         didSet {
             collectionView.reloadData()
         }
@@ -41,10 +37,10 @@ class GalleryViewController: UIViewController {
 
     // MARK: Views
 
-    private lazy var collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let screenWidth = UIScreen.main.bounds.maxX
-        let defaultInset = GalleryConstants.defaultEdgeInset
+        let defaultInset: CGFloat = 8
         let itemSapicing = defaultInset / 2 // Same spacing between cells and edges of the screen
         let cellEdgeSize = screenWidth / 2 - defaultInset * 2 + itemSapicing
         layout.itemSize = CGSize(width: cellEdgeSize, height: cellEdgeSize)
@@ -77,7 +73,8 @@ class GalleryViewController: UIViewController {
 
     // MARK: Initializers
 
-    init(fetcher: FetchingProtocol) {
+    init(fetcher: FetchingProtocol, photoDetailsBuilder: PhotoDetailsBuilder?) {
+        self.photoDetailsBuilder = photoDetailsBuilder
         self.fetcher = fetcher
         super.init(nibName: nil, bundle: nil)
         setup()
@@ -115,7 +112,7 @@ class GalleryViewController: UIViewController {
     private func setupNavigationTitle() {
         let label = UILabel()
         label.text = "100 Photos on first page"
-        label.font = UIFont(name: "SparkyStones-Regular", size: 24)
+        label.font = .sparkyStones(of: 20)
         navigationItem.titleView = label
     }
 
@@ -139,7 +136,7 @@ class GalleryViewController: UIViewController {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(PhotoCell.self, forCellWithReuseIdentifier: "cell")
-        interactor?.fetchPhotos(page: 1, perpage: 100)
+        interactor?.make(request: .fetchPhotos(page: 1, perPage: 100))
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -152,15 +149,16 @@ class GalleryViewController: UIViewController {
 // MARK: Extensions
 
 extension GalleryViewController: GalleryDisplayLogic {
-    func display(photos: [Photo]) {
-        DispatchQueue.main.async {
-            self.photos = photos
-        }
-    }
-
-    func display(errorMessage: String) {
-        DispatchQueue.main.async {
-            self.showAlert("OOPS", errorMessage)
+    func display(viewModel: Gallery.Display) {
+        switch viewModel {
+        case .displayPhotos(let photos):
+            DispatchQueue.main.async {
+                self.photos = photos
+            }
+        case .display(let error):
+            DispatchQueue.main.async {
+                self.showAlert("OOPS", error)
+            }
         }
     }
 }
@@ -188,30 +186,39 @@ extension GalleryViewController: UICollectionViewDelegate, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView,
                         willDisplay cell: UICollectionViewCell,
                         forItemAt indexPath: IndexPath) {
-        let columns = Int(collectionView.frame.width / cell.frame.width)
-        let navBarHeight = navigationController?.navigationBar.frame.height
-        // Count how much cells can fit the screen
-        var maxCellsOnScreen: Int {
-            Int(
-                (collectionView.frame.height - (navBarHeight ?? 0)) / cell.contentView.frame.height
-            ) * columns
+        let animationDuration = 0.4
+        let basicDelay = 0.2
+        let column = Double(cell.frame.minX / cell.frame.width)
+        let row = Double(cell.frame.minY / cell.frame.height)
+        let distance = sqrt(pow(column, 2) + pow(row, 2))
+        var totalDelay: Double = 0
+        if indexPath.item <= collectionView.visibleCells.count {
+            totalDelay = sqrt(distance) * basicDelay
+        } else {
+            if indexPath.item % 2 == 0 {
+                totalDelay = 0
+            } else {
+                totalDelay = 0.1
+            }
         }
-        var delay: Double = 0
-        var isScrollingUp: Bool {
-            collectionView.contentOffset.y < lastContentOffset.y
-        }
-        lastContentOffset = collectionView.contentOffset
-        // If it first appearence, animation goes from let-top to right-bottom
-        if indexPath.row + 1 <= maxCellsOnScreen, !isScrollingUp {
-            delay = sqrt(Double(indexPath.row)) * 0.2
-        } else if indexPath.row % 2 != 0 {
-            // if scrolling up we ignore left to right animation even for first cells
-            delay += 0.2
-        }
-        UIView.animate(withDuration: 0.4, delay: delay) {
+        UIView.animate(withDuration: animationDuration, delay: sqrt(totalDelay)) {
             cell.contentView.alpha = 1
             cell.transform = CGAffineTransform.identity
         }
+    }
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        router?.routeToDetailsVC()
+    }
+
+    func collectionView(_ collectionView: UICollectionView,
+                        contextMenuConfigurationForItemAt indexPath: IndexPath,
+                        point: CGPoint) -> UIContextMenuConfiguration? {
+        let config = UIContextMenuConfiguration(identifier: indexPath as NSIndexPath,
+                                                previewProvider: {
+                                                    PhotoDetailsViewController(fetcher: NetworkFetcher(networkService: NetworkService()))
+                                                }, actionProvider: nil)
+        return config
     }
 }
 
@@ -219,7 +226,7 @@ extension GalleryViewController: UICollectionViewDelegate, UICollectionViewDataS
 
 struct GalleryView_Previews: PreviewProvider {
     static var previews: some View {
-        GalleryViewController(fetcher: NetworkFetcher(networkService: NetworkService()))
+        GalleryViewController(fetcher: NetworkFetcher(networkService: NetworkService()), photoDetailsBuilder: nil)
             .makePreview()
     }
 }

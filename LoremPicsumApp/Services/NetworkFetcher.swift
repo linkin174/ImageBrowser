@@ -10,6 +10,10 @@ import NeedleFoundation
 import UIKit.UIImage
 import Combine
 
+enum FetchingError: Error {
+    case badDecoding
+}
+
 protocol FetcherDependency: Dependency {
     var networkService: NetworkingProtocol { get }
 }
@@ -27,7 +31,6 @@ final class FetcherDiComponent: Component<FetcherDependency>, FetcherBuilder {
 protocol FetchingProtocol {
     func fetchRandomImage() async throws -> Data
     func fetchPhotos(page: Int?, limit: Int?) async throws -> [Photo]
-    func fetchRandomImageData(completion: @escaping (Result<Data, Error>) -> Void)
 }
 
 final class NetworkFetcher: FetchingProtocol {
@@ -54,11 +57,8 @@ final class NetworkFetcher: FetchingProtocol {
     /// - Returns: Return image data of random image from API
     func fetchRandomImage() async throws -> Data {
         do {
-            #warning("test")
-            networkService.makeRequestWithCompletion(API.randomImage, nil) { result in
-                print(result)
-            }
-            return try await networkService.makeRequest(API.randomImage, nil)
+            let data = try await networkService.makeRequest(API.randomImage, nil)
+            return data
         } catch let error {
             throw error
         }
@@ -76,7 +76,7 @@ final class NetworkFetcher: FetchingProtocol {
     /// > Warning: Maximum photos per page allowed equals 100.
     /// > Everything above 100 would be ignored
     ///
-    /// - Throws: Method can throw ``APIError``
+    /// - Throws: Method can throw ``FetchingError``
     ///
     /// - Parameters:
     ///     - page: Selected page to load from, default = 1
@@ -100,14 +100,10 @@ final class NetworkFetcher: FetchingProtocol {
         }
     }
 
-    func fetchRandomImageData(completion: @escaping (Result<Data, Error>) -> Void) {
-        networkService.makeRequestWithCompletion(API.randomImage, nil, completion: completion)
-    }
-
     private func decode<T: Decodable>(from data: Data, to type: T.Type) throws -> T {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
-        guard let decoded = try? decoder.decode(type, from: data) else { throw APIError.badDecoding }
+        guard let decoded = try? decoder.decode(type, from: data) else { throw FetchingError.badDecoding }
         return decoded
     }
 }

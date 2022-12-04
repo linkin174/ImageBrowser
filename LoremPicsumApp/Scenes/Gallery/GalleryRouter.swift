@@ -13,7 +13,7 @@
 import UIKit
 
 @objc protocol GalleryRoutingLogic {
-    // func routeToSomewhere(segue: UIStoryboardSegue?)
+    func routeToDetailsVC()
 }
 
 protocol GalleryDataPassing {
@@ -24,32 +24,31 @@ class GalleryRouter: NSObject, GalleryRoutingLogic, GalleryDataPassing {
     weak var viewController: GalleryViewController?
     var dataStore: GalleryDataStore?
 
-// MARK: Routing (navigating to other screens)
+    func routeToDetailsVC() {
+        guard
+            let source = viewController,
+            let destination = source.photoDetailsBuilder?.photoDetailsViewController,
+            var destinationDS = destination.router?.dataStore,
+            let dataStore
+        else {
+            return
+        }
+        passDataToPhotoDetailsVC(source: dataStore, destination: &destinationDS)
+        navigateToVC(source: source, destination: destination)
 
-// func routeToSomewhere(segue: UIStoryboardSegue?) {
-//    if let segue = segue {
-//        let destinationVC = segue.destination as! SomewhereViewController
-//        var destinationDS = destinationVC.router!.dataStore!
-//        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-//    } else {
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        let destinationVC = storyboard.instantiateViewController(
-// withIdentifier: "SomewhereViewController") as! SomewhereViewController
-//        var destinationDS = destinationVC.router!.dataStore!
-//        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-//        navigateToSomewhere(source: viewController!, destination: destinationVC)
-//    }
-// }
+    }
 
-// MARK: Navigation to other screen
+    private func navigateToVC(source: UIViewController, destination: UIViewController) {
+        source.navigationController?.pushViewController(destination, animated: true)
+    }
 
-// func navigateToSomewhere(source: GalleryViewController, destination: SomewhereViewController) {
-//    source.show(destination, sender: nil)
-// }
-
-// MARK: Passing data to other screen
-
-//    func passDataToSomewhere(source: GalleryDataStore, destination: inout SomewhereDataStore) {
-//        destination.name = source.name
-//    }
+    private func passDataToPhotoDetailsVC(source: GalleryDataStore, destination: inout PhotoDetailsDataStore) {
+        let indexPaths = viewController?.collectionView.indexPathsForSelectedItems
+        if let indexPath = indexPaths?.first {
+            destination.photo = source.photos[indexPath.item]
+            guard let cell = viewController?.collectionView.cellForItem(at: indexPath) as? PhotoCell else { return }
+            guard let image = cell.imageView.image else { return }
+            destination.previewImage = image
+        }
+    }
 }

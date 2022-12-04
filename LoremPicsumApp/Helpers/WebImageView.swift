@@ -7,11 +7,7 @@
 
 import UIKit
 
-protocol WebImageViewDelegate: AnyObject {
-    func set(from stringURL: String?)
-}
-
-final class WebImageView: UIImageView, WebImageViewDelegate {
+final class WebImageView: UIImageView {
 
     private var currentUrlString: String?
 

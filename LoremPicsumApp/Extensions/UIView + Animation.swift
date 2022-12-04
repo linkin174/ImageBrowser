@@ -7,17 +7,15 @@
 
 import UIKit
 
-enum FadeType {
-    case fadeIn, fadeOut
-}
-
 extension UIView {
+
+    enum FadeType {
+        case fadeIn, fadeOut
+    }
+
     func animateFade(_ animationType: FadeType, _ duration: Double) {
         var opacity: CGFloat = 0
-
-        UIView.animate(withDuration: duration,
-                       delay: 0,
-                       options: [.curveEaseInOut]) {
+        UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseInOut]) {
             switch animationType {
             case .fadeIn:
                 opacity = 1

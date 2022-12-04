@@ -20,12 +20,12 @@ final class PhotoCell: UICollectionViewCell {
         return indicator
     }()
 
-    private let imageView: WebImageView = {
+    let imageView: WebImageView = {
         let imageView = WebImageView()
         imageView.contentMode = .scaleAspectFill
         imageView.image = UIImage(named: "dummy")
         imageView.layer.cornerRadius = 6
-        imageView.layer.masksToBounds = true
+        imageView.clipsToBounds = true
         return imageView
     }()
 

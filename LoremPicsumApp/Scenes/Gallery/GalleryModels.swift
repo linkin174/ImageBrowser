@@ -21,7 +21,23 @@ enum Gallery {
         case presentError(error: Error)
     }
     enum Display {
-        case displayPhotos(photos: [Photo])
+        case displayPhotos(photos: [PhotoViewModel])
         case display(error: String)
     }
+}
+
+protocol PhotoViewModelProtocol {
+    var author: String { get }
+    var url: URL? { get }
+    var downloadUrl: String { get }
+    var size: String { get }
+    var previewUrl: String { get }
+}
+
+struct PhotoViewModel: PhotoViewModelProtocol {
+    var author: String
+    var url: URL?
+    var downloadUrl: String
+    var size: String
+    var previewUrl: String
 }

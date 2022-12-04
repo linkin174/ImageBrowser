@@ -32,7 +32,7 @@ final class MainRouter: NSObject, MainRoutingLogic, MainDataPassing {
 
     func routeToRandomImageVC() {
         guard let source = viewController else { return }
-        guard let destination = source.randomImageBuilder?.randomImageViewController else { return }
+        guard let destination = viewController?.randomImageBuilder?.randomImageViewController else { return }
         presentSomeVC(source: source, destination: destination)
     }
 

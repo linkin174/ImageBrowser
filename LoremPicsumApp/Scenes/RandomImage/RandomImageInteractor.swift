@@ -42,12 +42,12 @@ class RandomImageInteractor: RandomImageBusinessLogic, RandomImageDataStore {
     func makeRequest(request: RandomImage.Request) {
         switch request {
         case .loadRandomImage:
-            fetcher.fetchRandomImageData { result in
-                switch result {
-                case .success(let success):
-                    self.presenter?.present(response: .presentRandomImageFrom(data: success))
-                case .failure(let failure):
-                    self.presenter?.present(response: .presentError(error: failure))
+            Task {
+                do {
+                    let data = try await fetcher.fetchRandomImage()
+                    presenter?.present(response: .presentRandomImageFrom(data: data))
+                } catch let error {
+                    presenter?.present(response: .presentError(error: error))
                 }
             }
         }

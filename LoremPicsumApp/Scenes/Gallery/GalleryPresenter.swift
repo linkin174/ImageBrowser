@@ -13,20 +13,27 @@
 import UIKit
 
 protocol GalleryPresentationLogic {
-    func present(photos: [Photo])
-    func present(error: Error)
+    func present(response: Gallery.Response)
 }
 
 class GalleryPresenter: GalleryPresentationLogic {
     // MARK: - Public Properties
+
     weak var viewController: GalleryDisplayLogic?
+
     // MARK: - Public Methods
-    func present(photos: [Photo]) {
-        viewController?.display(photos: photos)
-    }
-    func present(error: Error) {
-        if let error = error as? APIError {
-            viewController?.display(errorMessage: error.rawValue)
+
+    func present(response: Gallery.Response) {
+        switch response {
+        case .presentPhotos(let photos):
+            let photoViewModels = photos.map { PhotoViewModel(author: $0.author,
+                                                              url: URL(string: $0.url),
+                                                              downloadUrl: $0.downloadUrl,
+                                                              size: "\($0.width) x \($0.height)",
+                                                              previewUrl: $0.previewUrl)}
+            viewController?.display(viewModel: .displayPhotos(photos: photoViewModels))
+        case .presentError(let error):
+            viewController?.display(viewModel: .display(error: error.localizedDescription))
         }
     }
 }
